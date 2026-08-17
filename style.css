@@ -140,4 +140,25 @@ footer {
 }
 
 
+#about {
+    padding: 60px 20px;
+    text-align: center;
+    background-color: #f8f5ef;
+}
+
+#about h2 {
+    color: #264653;
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+#about p {
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+    font-size: 17px;
+}
+
+
+
 
