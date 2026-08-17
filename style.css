@@ -103,3 +103,41 @@ footer {
         font-size: 36px;
     }
 }
+
+
+
+#destinations {
+    padding: 60px 20px;
+    text-align: center;
+    background-color: #ffffff;
+}
+
+#destinations h2 {
+    color: #264653;
+    font-size: 36px;
+    margin-bottom: 30px;
+}
+
+.destination-card {
+    display: inline-block;
+    width: 250px;
+    margin: 15px;
+    padding: 25px;
+    background-color: #f8f5ef;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.destination-card h3 {
+    color: #264653;
+    font-size: 24px;
+}
+
+.destination-card p {
+    color: #333333;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+
+
