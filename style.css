@@ -159,6 +159,56 @@ footer {
     font-size: 17px;
 }
 
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+    header {
+        padding: 15px 5%;
+    }
+
+    nav {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    nav > a {
+        font-size: 24px;
+    }
+
+    nav ul {
+        gap: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    section h1 {
+        font-size: 36px;
+    }
+
+    section p {
+        font-size: 16px;
+    }
+
+    #destinations h2 {
+        font-size: 30px;
+    }
+
+    .destination-card {
+        display: block;
+        width: 90%;
+        max-width: 300px;
+        margin: 15px auto;
+    }
+
+    #about h2 {
+        font-size: 28px;
+    }
+
+    #about p {
+        font-size: 16px;
+    }
+}
+
+
 
 
 
