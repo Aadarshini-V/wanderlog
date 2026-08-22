@@ -24,10 +24,65 @@ function displayTrips() {
             <p><strong>Destination:</strong> ${trip.destination}</p>
             <p><strong>Date:</strong> ${trip.date}</p>
             <p><strong>Notes:</strong> ${trip.notes || "No notes"}</p>
+
+            <button onclick="editTrip(${trip.id})">Edit</button>
+            <button onclick="deleteTrip(${trip.id})">Delete</button>
         `;
 
         tripList.appendChild(tripCard);
     });
+}
+
+function editTrip(id) {
+    const trip = trips.find(function (trip) {
+        return trip.id === id;
+    });
+
+    if (!trip) return;
+
+    const newTitle = prompt("Enter new trip title:", trip.title);
+    if (newTitle === null) return;
+
+    const newDestination = prompt(
+        "Enter new destination:",
+        trip.destination
+    );
+    if (newDestination === null) return;
+
+    const newDate = prompt("Enter new date:", trip.date);
+    if (newDate === null) return;
+
+    const newNotes = prompt("Enter new notes:", trip.notes);
+    if (newNotes === null) return;
+
+    if (!newTitle.trim() || !newDestination.trim() || !newDate.trim()) {
+        alert("Title, destination and date are required.");
+        return;
+    }
+
+    trip.title = newTitle.trim();
+    trip.destination = newDestination.trim();
+    trip.date = newDate.trim();
+    trip.notes = newNotes.trim();
+
+    localStorage.setItem("trips", JSON.stringify(trips));
+
+    displayTrips();
+}
+function deleteTrip(id) {
+    const confirmDelete = confirm(
+        "Are you sure you want to delete this trip?"
+    );
+
+    if (!confirmDelete) return;
+
+    trips = trips.filter(function (trip) {
+        return trip.id !== id;
+    });
+
+    localStorage.setItem("trips", JSON.stringify(trips));
+
+    displayTrips();
 }
 
 // Add new trip
