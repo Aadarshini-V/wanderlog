@@ -52,6 +52,54 @@
         <p>Experience the modern city of Dubai.</p>
     </div>
 </section>
+        <section id="add-trip">
+    <h2>Add a New Trip</h2>
+
+    <form id="trip-form">
+        <div>
+            <label for="trip-title">Trip Title</label>
+            <input
+                type="text"
+                id="trip-title"
+                name="title"
+                placeholder="e.g. My Paris Trip"
+                required
+            >
+        </div>
+
+        <div>
+            <label for="trip-destination">Destination</label>
+            <input
+                type="text"
+                id="trip-destination"
+                name="destination"
+                placeholder="e.g. Paris, France"
+                required
+            >
+        </div>
+
+        <div>
+            <label for="trip-date">Travel Date</label>
+            <input
+                type="date"
+                id="trip-date"
+                name="date"
+                required
+            >
+        </div>
+
+        <div>
+            <label for="trip-notes">Notes</label>
+            <textarea
+                id="trip-notes"
+                name="notes"
+                placeholder="Write something about your trip..."
+            ></textarea>
+        </div>
+
+        <button type="submit">Add Trip</button>
+    </form>
+</section>
 
 <section id="about">
     <h2>About Wanderlog</h2>
