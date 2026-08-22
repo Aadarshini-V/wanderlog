@@ -207,6 +207,152 @@ footer {
         font-size: 16px;
     }
 }
+/* Add Trip Section */
+#add-trip {
+    min-height: auto;
+    padding: 60px 20px;
+    background-color: #ffffff;
+}
+
+#add-trip h2,
+#my-trips h2 {
+    color: #264653;
+    font-size: 32px;
+    margin-bottom: 30px;
+}
+
+/* Trip Form */
+#trip-form {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    text-align: left;
+}
+
+#trip-form div {
+    display: flex;
+    flex-direction: column;
+}
+
+#trip-form label {
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: #264653;
+}
+
+#trip-form input,
+#trip-form textarea {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+}
+
+#trip-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+#trip-form input:focus,
+#trip-form textarea:focus {
+    outline: none;
+    border-color: #e76f51;
+}
+
+/* Add Trip Button */
+#trip-form button {
+    background-color: #e76f51;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#trip-form button:hover {
+    background-color: #d95d40;
+}
+
+/* My Trips */
+#my-trips {
+    min-height: auto;
+    padding: 60px 20px;
+    background-color: #f8f5ef;
+}
+
+#trip-list {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* Trip Card */
+.trip-card {
+    width: 280px;
+    padding: 25px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+.trip-card h3 {
+    color: #264653;
+    font-size: 24px;
+    margin-bottom: 12px;
+}
+
+.trip-card p {
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+
+/* Edit and Delete Buttons */
+.trip-card button {
+    border: none;
+    padding: 8px 14px;
+    margin-top: 12px;
+    margin-right: 6px;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+}
+
+.trip-card button:first-of-type {
+    background-color: #264653;
+}
+
+.trip-card button:last-of-type {
+    background-color: #e76f51;
+}
+
+.trip-card button:hover {
+    opacity: 0.85;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    #trip-form {
+        width: 90%;
+    }
+
+    .trip-card {
+        width: 90%;
+        max-width: 320px;
+    }
+
+    #add-trip h2,
+    #my-trips h2 {
+        font-size: 28px;
+    }
+}
 
 
 
