@@ -1,6 +1,6 @@
 const tripForm = document.getElementById("trip-form");
 const tripList = document.getElementById("trip-list");
-const emptyMessage = document.getElementById("empty-message");
+
 
 // Get trips from localStorage
 let trips = JSON.parse(localStorage.getItem("trips")) || [];
