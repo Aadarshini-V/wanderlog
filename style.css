@@ -393,6 +393,23 @@ footer {
     background-color: #ffe5e5;
     color: #9b2226;
 }
+.trip-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-left: 5px solid #e76f51;
+}
+
+.trip-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+}
+
+.trip-card p {
+    color: #555;
+}
+
+.trip-card strong {
+    color: #264653;
+}
 
 
 
