@@ -1,3 +1,13 @@
+const formMessage = document.getElementById("form-message");
+function showMessage(message, type) {
+    formMessage.textContent = message;
+    formMessage.className = type;
+
+    setTimeout(function () {
+        formMessage.textContent = "";
+        formMessage.className = "";
+    }, 3000);
+}
 const tripForm = document.getElementById("trip-form");
 const tripList = document.getElementById("trip-list");
 
@@ -99,9 +109,20 @@ tripForm.addEventListener("submit", function (event) {
     const notes = notesInput.value.trim();
 
     // Validation
-    if (!title || !destination || !date) {
-        alert("Please fill in all required fields.");
-        return;
+if (!title || !destination || !date) {
+    showMessage("Please fill in all required fields.", "error");
+    return;
+}
+
+if (title.length < 3) {
+    showMessage("Trip title must be at least 3 characters.", "error");
+    return;
+}
+
+if (destination.length < 2) {
+    showMessage("Please enter a valid destination.", "error");
+    return;
+}
     }
 
     // UPDATE existing trip
@@ -116,7 +137,7 @@ tripForm.addEventListener("submit", function (event) {
             trip.date = date;
             trip.notes = notes;
 
-            alert("Trip updated successfully!");
+            showMessage("Trip updated successfully!", "success");
         }
 
         editingTripId = null;
@@ -134,7 +155,7 @@ tripForm.addEventListener("submit", function (event) {
 
         trips.push(newTrip);
 
-        alert("Trip added successfully!");
+    showMessage("Trip added successfully!", "success");
     }
 
     saveTrips();
@@ -205,7 +226,9 @@ cancelBtn.addEventListener("click", function () {
     resetForm();
 });
 
+const today = new Date().toISOString().split("T")[0];
 
+dateInput.min = today;
 // Display saved trips when page loads
 displayTrips();
 
