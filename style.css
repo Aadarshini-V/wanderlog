@@ -23,6 +23,24 @@ header {
 nav {
     display: flex;
     justify-content: space-between;
+
+    /* Form buttons */
+.form-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.form-buttons button {
+    flex: 1;
+}
+
+.cancel-btn {
+    background-color: #777 !important;
+}
+
+.cancel-btn:hover {
+    background-color: #555 !important;
+}
     align-items: center;
 }
 
