@@ -1,169 +1,387 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Wanderlog</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
+    <!-- ================= HEADER ================= -->
+
     <header>
         <nav>
-            <a href="#">Wanderlog</a>
+
+            <a href="#home" class="logo">
+                Wanderlog
+            </a>
 
             <ul>
-                
-    <li><a href="#home">Home</a></li>
-    <li><a href="#destinations">Destinations</a></li>
-    <li><a href="#add-trip">Add Trip</a></li>
-    <li><a href="#my-trips">My Trips</a></li>
-    <li><a href="#about">About</a></li>
+                <li>
+                    <a href="#home">Home</a>
+                </li>
 
+                <li>
+                    <a href="#destinations">Destinations</a>
+                </li>
+
+                <li>
+                    <a href="#add-trip">Add Trip</a>
+                </li>
+
+                <li>
+                    <a href="#my-trips">My Trips</a>
+                </li>
+
+                <li>
+                    <a href="#about">About</a>
+                </li>
             </ul>
+
         </nav>
     </header>
 
+
+    <!-- ================= MAIN ================= -->
+
     <main>
 
-        <section id="home">
-            <h1>Explore the World</h1>
+        <!-- ================= HOME ================= -->
 
-            <p>
-                Discover new places, create memories,
-                and share your travel stories.
+        <section id="home">
+
+            <div class="hero-content">
+
+                <p class="hero-tag">
+                    YOUR TRAVEL JOURNAL
+                </p>
+
+                <h1>
+                    Explore the World
+                </h1>
+
+                <p>
+                    Discover new places, create memories,
+                    and share your travel stories.
+                </p>
+
+                <a href="#destinations" class="explore-btn">
+                    Start Exploring
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= DESTINATIONS ================= -->
+
+        <section id="destinations">
+
+            <h2>
+                Popular Destinations
+            </h2>
+
+            <p class="section-description">
+                Get inspired for your next adventure.
             </p>
 
-            <a href="#destinations" class="explore-btn">Start Exploring</a>
-            
+            <div class="destinations-container">
+
+                <div class="destination-card">
+
+                    <div class="destination-icon">
+                        🇫🇷
+                    </div>
+
+                    <h3>
+                        Paris
+                    </h3>
+
+                    <p>
+                        Explore the beautiful city of Paris.
+                    </p>
+
+                </div>
+
+
+                <div class="destination-card">
+
+                    <div class="destination-icon">
+                        🇯🇵
+                    </div>
+
+                    <h3>
+                        Tokyo
+                    </h3>
+
+                    <p>
+                        Discover the amazing culture of Tokyo.
+                    </p>
+
+                </div>
+
+
+                <div class="destination-card">
+
+                    <div class="destination-icon">
+                        🇦🇪
+                    </div>
+
+                    <h3>
+                        Dubai
+                    </h3>
+
+                    <p>
+                        Experience the modern city of Dubai.
+                    </p>
+
+                </div>
+
+            </div>
+
         </section>
-    <section id="destinations">
-    <h2>Popular Destinations</h2>
 
-    <div class="destination-card">
-        <h3>Paris</h3>
-        <p>Explore the beautiful city of Paris.</p>
-    </div>
 
-    <div class="destination-card">
-        <h3>Tokyo</h3>
-        <p>Discover the amazing culture of Tokyo.</p>
-    </div>
+        <!-- ================= ADD / EDIT TRIP ================= -->
 
-    <div class="destination-card">
-        <h3>Dubai</h3>
-        <p>Experience the modern city of Dubai.</p>
-    </div>
-</section>
         <section id="add-trip">
-    <h2 id="form-heading">Add a New Trip</h2>
 
-    <form id="trip-form">
+            <h2 id="form-heading">
+                Add a New Trip
+            </h2>
 
-        <div>
-            <label for="trip-title">Trip Title</label>
-            <input
-                type="text"
-                id="trip-title"
-                name="title"
-                placeholder="e.g. My Paris Trip"
-                maxlength="50"
-                required
-            >
-        </div>
+            <p class="section-description">
+                Create and save your next travel adventure.
+            </p>
 
-        <div>
-            <label for="trip-destination">Destination</label>
-            <input
-                type="text"
-                id="trip-destination"
-                name="destination"
-                placeholder="e.g. Paris, France"
-                maxlength="60"
-                required
-            >
-        </div>
 
-        <div>
-            <label for="trip-date">Travel Date</label>
-            <input
-                type="date"
-                id="trip-date"
-                name="date"
-                required
-            >
-        </div>
+            <form id="trip-form" novalidate>
 
-        <div>
-    <label for="trip-image">Cover Image URL</label>
-    <input
-        type="url"
-        id="trip-image"
-        name="image"
-        placeholder="https://example.com/image.jpg"
-    >
-</div>
+                <!-- Trip Title -->
 
-        <div>
-            <label for="trip-notes">Notes</label>
-            <textarea
-                id="trip-notes"
-                name="notes"
-                placeholder="Write something about your trip..."
-                maxlength="300"
-            ></textarea>
-        </div>
+                <div class="form-group">
 
-        <p id="form-message"></p>
+                    <label for="trip-title">
+                        Trip Title *
+                    </label>
 
-        <div class="form-buttons">
-            <button type="submit" id="submit-btn">Add Trip</button>
+                    <input
+                        type="text"
+                        id="trip-title"
+                        name="title"
+                        placeholder="e.g. My Paris Trip"
+                        maxlength="50"
+                        required
+                    >
 
-            <button
-                type="button"
-                id="cancel-btn"
-                class="cancel-btn"
-            >
-                Cancel
-            </button>
-        </div>
+                </div>
 
-    </form>
-</section>
-<section id="my-trips">
-    <h2>My Trips</h2>
 
-    <div id="trip-list">
-        <p id="empty-message">
-            No trips added yet. Start planning your next adventure!
-        </p>
-    </div>
-</section>
+                <!-- Destination -->
 
-            
-        
-                
-        
-    
+                <div class="form-group">
 
-<section id="about">
-    <h2>About Wanderlog</h2>
-    <p>
-        Wanderlog helps you discover beautiful destinations,
-        plan your trips, and create unforgettable travel memories.
-    </p>
-</section>
+                    <label for="trip-destination">
+                        Destination *
+                    </label>
 
-        
+                    <input
+                        type="text"
+                        id="trip-destination"
+                        name="destination"
+                        placeholder="e.g. Paris, France"
+                        maxlength="60"
+                        required
+                    >
 
+                </div>
+
+
+                <!-- Date -->
+
+                <div class="form-group">
+
+                    <label for="trip-date">
+                        Travel Date *
+                    </label>
+
+                    <input
+                        type="date"
+                        id="trip-date"
+                        name="date"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Image -->
+
+                <div class="form-group">
+
+                    <label for="trip-image">
+                        Cover Image URL
+                    </label>
+
+                    <input
+                        type="url"
+                        id="trip-image"
+                        name="image"
+                        placeholder="https://example.com/image.jpg"
+                    >
+
+                    <small>
+                        Optional — add an image URL for your trip.
+                    </small>
+
+                </div>
+
+
+                <!-- Notes -->
+
+                <div class="form-group">
+
+                    <label for="trip-notes">
+                        Notes
+                    </label>
+
+                    <textarea
+                        id="trip-notes"
+                        name="notes"
+                        placeholder="Write something about your trip..."
+                        maxlength="300"
+                    ></textarea>
+
+                    <small>
+                        Maximum 300 characters.
+                    </small>
+
+                </div>
+
+
+                <!-- Message -->
+
+                <p id="form-message"></p>
+
+
+                <!-- Buttons -->
+
+                <div class="form-buttons">
+
+                    <button
+                        type="submit"
+                        id="submit-btn"
+                    >
+                        Add Trip
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="cancel-btn"
+                        class="cancel-btn"
+                    >
+                        Cancel
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <!-- ================= MY TRIPS ================= -->
+
+        <section id="my-trips">
+
+            <h2>
+                My Trips
+            </h2>
+
+            <p class="section-description">
+                Your saved adventures appear here.
+            </p>
+
+
+            <!--
+                IMPORTANT:
+                JavaScript dynamically creates trip cards here.
+                Do NOT add hardcoded trip cards.
+            -->
+
+            <div id="trip-list">
+
+                <div id="empty-message">
+
+                    <div class="empty-icon">
+                        🌍
+                    </div>
+
+                    <h3>
+                        No trips added yet
+                    </h3>
+
+                    <p>
+                        Start planning your next adventure!
+                    </p>
+
+                    <a href="#add-trip" class="empty-btn">
+                        Add Your First Trip
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= ABOUT ================= -->
+
+        <section id="about">
+
+            <h2>
+                About Wanderlog
+            </h2>
+
+            <p>
+                Wanderlog helps you discover beautiful destinations,
+                plan your trips, and create unforgettable travel memories.
+            </p>
+
+            <p>
+                Create your trips, save them in your browser,
+                update your plans whenever you want, and remove
+                trips that are no longer needed.
+            </p>
+
+        </section>
 
     </main>
 
+
+    <!-- ================= FOOTER ================= -->
+
     <footer>
-        <p>&copy; 2026 Wanderlog. All rights reserved.</p>
+
+        <p>
+            &copy; 2026 Wanderlog. All rights reserved.
+        </p>
+
     </footer>
+
+
+    <!-- JavaScript -->
+
     <script src="script.js"></script>
 
 </body>
-</html>
+
+    </html>
