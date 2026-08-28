@@ -12,88 +12,143 @@ const dateInput = document.getElementById("trip-date");
 const imageInput = document.getElementById("trip-image");
 const notesInput = document.getElementById("trip-notes");
 
-const STORAGE_KEY = "wanderlogTrips";
 
-let trips = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+// Get saved trips
+let trips = JSON.parse(localStorage.getItem("trips")) || [];
+
+
+// Track editing trip
 let editingTripId = null;
 
 
 // -------------------------
-// READ - Display trips
+// SAVE TRIPS
+// -------------------------
+function saveTrips() {
+    localStorage.setItem("trips", JSON.stringify(trips));
+}
+
+
+// -------------------------
+// SHOW MESSAGE
+// -------------------------
+function showMessage(message, type) {
+    formMessage.textContent = message;
+    formMessage.className = type;
+
+    setTimeout(function () {
+        formMessage.textContent = "";
+        formMessage.className = "";
+    }, 3000);
+}
+
+
+// -------------------------
+// DISPLAY TRIPS
 // -------------------------
 function displayTrips() {
+
     tripList.innerHTML = "";
 
     if (trips.length === 0) {
-        tripList.innerHTML = `
-            <p id="empty-message">
-                No trips added yet. Start planning your next adventure!
-            </p>
-        `;
+
+        const emptyMessage = document.createElement("p");
+
+        emptyMessage.id = "empty-message";
+
+        emptyMessage.textContent =
+            "No trips added yet. Start planning your next adventure!";
+
+        tripList.appendChild(emptyMessage);
+
         return;
     }
+
 
     trips.forEach(function (trip) {
 
         const tripCard = document.createElement("article");
+
         tripCard.className = "trip-card";
 
-        const formattedDate = new Date(trip.date).toLocaleDateString(
-            "en-US",
-            {
-                year: "numeric",
-                month: "long",
-                day: "numeric"
-            }
-        );
 
-        tripCard.innerHTML = `
-            ${
-                trip.image
-                    ? `<img src="${trip.image}" alt="${escapeHTML(trip.title)}" class="trip-image">`
-                    : ""
-            }
+        // Image
+        if (trip.image) {
 
-            <div class="trip-card-content">
+            const image = document.createElement("img");
 
-                <h3>${escapeHTML(trip.title)}</h3>
+            image.src = trip.image;
+            image.alt = trip.title;
+            image.className = "trip-image";
 
-                <p>
-                    <strong>📍 Destination:</strong>
-                    ${escapeHTML(trip.destination)}
-                </p>
+            image.onerror = function () {
+                image.style.display = "none";
+            };
 
-                <p>
-                    <strong>📅 Date:</strong>
-                    ${formattedDate}
-                </p>
+            tripCard.appendChild(image);
+        }
 
-                ${
-                    trip.notes
-                        ? `<p><strong>📝 Notes:</strong> ${escapeHTML(trip.notes)}</p>`
-                        : ""
-                }
 
-                <div class="trip-actions">
-                    <button
-                        type="button"
-                        class="edit-btn"
-                        data-id="${trip.id}"
-                    >
-                        Edit
-                    </button>
+        // Title
+        const title = document.createElement("h3");
 
-                    <button
-                        type="button"
-                        class="delete-btn"
-                        data-id="${trip.id}"
-                    >
-                        Delete
-                    </button>
-                </div>
+        title.textContent = trip.title;
 
-            </div>
-        `;
+        tripCard.appendChild(title);
+
+
+        // Destination
+        const destination = document.createElement("p");
+
+        destination.innerHTML = "<strong>📍 Destination:</strong> ";
+
+        destination.append(trip.destination);
+
+        tripCard.appendChild(destination);
+
+
+        // Date
+        const date = document.createElement("p");
+
+        date.innerHTML = "<strong>📅 Date:</strong> ";
+
+        date.append(formatDate(trip.date));
+
+        tripCard.appendChild(date);
+
+
+        // Notes
+        const notes = document.createElement("p");
+
+        notes.innerHTML = "<strong>📝 Notes:</strong> ";
+
+        notes.append(trip.notes || "No notes");
+
+        tripCard.appendChild(notes);
+
+
+        // Edit button
+        const editButton = document.createElement("button");
+
+        editButton.textContent = "Edit";
+
+        editButton.addEventListener("click", function () {
+            editTrip(trip.id);
+        });
+
+
+        // Delete button
+        const deleteButton = document.createElement("button");
+
+        deleteButton.textContent = "Delete";
+
+        deleteButton.addEventListener("click", function () {
+            deleteTrip(trip.id);
+        });
+
+
+        tripCard.appendChild(editButton);
+        tripCard.appendChild(deleteButton);
 
         tripList.appendChild(tripCard);
     });
@@ -101,11 +156,27 @@ function displayTrips() {
 
 
 // -------------------------
-// CREATE / UPDATE
+// FORMAT DATE
+// -------------------------
+function formatDate(dateString) {
+
+    const date = new Date(dateString + "T00:00:00");
+
+    return date.toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    });
+}
+
+
+// -------------------------
+// ADD / UPDATE TRIP
 // -------------------------
 tripForm.addEventListener("submit", function (event) {
 
     event.preventDefault();
+
 
     const title = titleInput.value.trim();
     const destination = destinationInput.value.trim();
@@ -113,70 +184,106 @@ tripForm.addEventListener("submit", function (event) {
     const image = imageInput.value.trim();
     const notes = notesInput.value.trim();
 
+
+    // Required validation
     if (!title || !destination || !date) {
-        showMessage("Please fill in all required fields.", "error");
+
+        showMessage(
+            "Please fill in all required fields.",
+            "error"
+        );
+
         return;
     }
 
+
+    // Title validation
+    if (title.length < 3) {
+
+        showMessage(
+            "Trip title must be at least 3 characters.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    // Destination validation
+    if (destination.length < 2) {
+
+        showMessage(
+            "Please enter a valid destination.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    // -------------------------
+    // UPDATE
+    // -------------------------
     if (editingTripId !== null) {
 
-        // UPDATE
-        trips = trips.map(function (trip) {
-
-            if (trip.id === editingTripId) {
-                return {
-                    ...trip,
-                    title: title,
-                    destination: destination,
-                    date: date,
-                    image: image,
-                    notes: notes
-                };
-            }
-
-            return trip;
+        const trip = trips.find(function (trip) {
+            return trip.id === editingTripId;
         });
 
-        showMessage("Trip updated successfully!", "success");
 
-    } else {
+        if (trip) {
 
-        // CREATE
+            trip.title = title;
+            trip.destination = destination;
+            trip.date = date;
+            trip.image = image;
+            trip.notes = notes;
+
+            showMessage(
+                "Trip updated successfully!",
+                "success"
+            );
+        }
+
+    }
+
+
+    // -------------------------
+    // CREATE
+    // -------------------------
+    else {
+
         const newTrip = {
+
             id: Date.now(),
+
             title: title,
+
             destination: destination,
+
             date: date,
+
             image: image,
+
             notes: notes
         };
 
+
         trips.push(newTrip);
 
-        showMessage("Trip added successfully!", "success");
+
+        showMessage(
+            "Trip added successfully!",
+            "success"
+        );
     }
 
+
     saveTrips();
+
     displayTrips();
 
     resetForm();
-});
-
-
-// -------------------------
-// EDIT / DELETE
-// -------------------------
-tripList.addEventListener("click", function (event) {
-
-    const id = Number(event.target.dataset.id);
-
-    if (event.target.classList.contains("edit-btn")) {
-        editTrip(id);
-    }
-
-    if (event.target.classList.contains("delete-btn")) {
-        deleteTrip(id);
-    }
 });
 
 
@@ -189,19 +296,32 @@ function editTrip(id) {
         return trip.id === id;
     });
 
-    if (!trip) return;
+
+    if (!trip) {
+        return;
+    }
+
 
     editingTripId = id;
 
+
     titleInput.value = trip.title;
+
     destinationInput.value = trip.destination;
+
     dateInput.value = trip.date;
+
     imageInput.value = trip.image || "";
+
     notesInput.value = trip.notes || "";
 
+
     formHeading.textContent = "Edit Trip";
+
     submitBtn.textContent = "Update Trip";
+
     cancelBtn.style.display = "inline-block";
+
 
     document.getElementById("add-trip").scrollIntoView({
         behavior: "smooth"
@@ -218,31 +338,37 @@ function deleteTrip(id) {
         return trip.id === id;
     });
 
-    if (!trip) return;
 
-    const confirmed = confirm(
+    if (!trip) {
+        return;
+    }
+
+
+    const confirmDelete = confirm(
         `Are you sure you want to delete "${trip.title}"?`
     );
 
-    if (!confirmed) return;
+
+    if (!confirmDelete) {
+        return;
+    }
+
 
     trips = trips.filter(function (trip) {
         return trip.id !== id;
     });
 
+
     saveTrips();
+
     displayTrips();
 
-    showMessage("Trip deleted successfully!", "success");
+
+    showMessage(
+        "Trip deleted successfully!",
+        "success"
+    );
 }
-
-
-// -------------------------
-// CANCEL EDIT
-// -------------------------
-cancelBtn.addEventListener("click", function () {
-    resetForm();
-});
 
 
 // -------------------------
@@ -255,56 +381,35 @@ function resetForm() {
     editingTripId = null;
 
     formHeading.textContent = "Add a New Trip";
+
     submitBtn.textContent = "Add Trip";
 
     cancelBtn.style.display = "none";
-
-    formMessage.textContent = "";
-    formMessage.className = "";
 }
 
 
 // -------------------------
-// SAVE TO localStorage
+// CANCEL EDIT
 // -------------------------
-function saveTrips() {
+cancelBtn.addEventListener("click", function () {
 
-    localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(trips)
-    );
-}
+    resetForm();
+});
 
 
 // -------------------------
-// MESSAGE
+// PREVENT PAST DATES
 // -------------------------
-function showMessage(message, type) {
+const today = new Date()
+    .toISOString()
+    .split("T")[0];
 
-    formMessage.textContent = message;
-    formMessage.className = type;
-
-    setTimeout(function () {
-        formMessage.textContent = "";
-        formMessage.className = "";
-    }, 3000);
-}
-
-
-// -------------------------
-// BASIC HTML escaping
-// -------------------------
-function escapeHTML(value) {
-
-    const div = document.createElement("div");
-    div.textContent = value;
-
-    return div.innerHTML;
-}
+dateInput.min = today;
 
 
 // -------------------------
 // INITIAL LOAD
 // -------------------------
 displayTrips();
+
 cancelBtn.style.display = "none";
