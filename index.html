@@ -60,6 +60,7 @@
     <h2 id="form-heading">Add a New Trip</h2>
 
     <form id="trip-form">
+
         <div>
             <label for="trip-title">Trip Title</label>
             <input
@@ -94,6 +95,17 @@
             >
         </div>
 
+        <!-- NEW: Cover Image URL -->
+        <div>
+            <label for="trip-image">Cover Image URL</label>
+            <input
+                type="url"
+                id="trip-image"
+                name="image"
+                placeholder="https://example.com/image.jpg"
+            >
+        </div>
+
         <div>
             <label for="trip-notes">Notes</label>
             <textarea
@@ -102,30 +114,39 @@
                 placeholder="Write something about your trip..."
                 maxlength="300"
             ></textarea>
-            <p id="form-message"></p>
         </div>
+
+        <p id="form-message"></p>
 
         <div class="form-buttons">
             <button type="submit" id="submit-btn">Add Trip</button>
-            <button type="button" id="cancel-btn" class="cancel-btn">
+
+            <button
+                type="button"
+                id="cancel-btn"
+                class="cancel-btn"
+            >
                 Cancel
             </button>
         </div>
+
     </form>
 </section>
+<section id="my-trips">
+    <h2>My Trips</h2>
 
+    <div id="trip-list">
+        <p id="empty-message">
+            No trips added yet. Start planning your next adventure!
+        </p>
+    </div>
+</section>
 
             
         
                 
         
-        <section id="my-trips">
-    <h2>My Trips</h2>
-
-    <div id="trip-list">
-        <p id="empty-message">No trips added yet.</p>
-    </div>
-</section>
+    
 
 <section id="about">
     <h2>About Wanderlog</h2>
