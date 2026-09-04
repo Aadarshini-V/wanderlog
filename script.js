@@ -1073,29 +1073,55 @@ cancelBtn.addEventListener(
     }
 );
 
-
 /* =====================================================
    EVENT DELEGATION
    ===================================================== */
 
-tripList.addEventListener(
-    "click",
-    function (event) {
+tripList.addEventListener("click", function (event) {
 
-        const button =
-            event.target.closest("button");
+    const button = event.target.closest("button");
+
+    if (!button) {
+        return;
+    }
+
+    const action = button.dataset.action;
+    const tripId = button.dataset.id;
+
+    if (!tripId) {
+        return;
+    }
+
+    if (action === "view") {
+        viewTrip(tripId);
+    }
+
+    if (action === "edit") {
+        editTrip(tripId);
+    }
+
+    if (action === "delete") {
+        deleteTrip(tripId);
+    }
+
+});
 
 
-        if (!button) {
-            return;
-        }
+/* =====================================================
+   ESCAPE KEY — CLOSE DETAIL MODAL
+   ===================================================== */
+
+document.addEventListener("keydown", function (event) {
+
+    if (event.key === "Escape") {
+        closeDetail();
+    }
+
+});
 
 
-        const action =
-            button.dataset.action;
+/* =====================================================
+   INITIAL LOAD
+   ===================================================== */
 
-        const tripId =
-            button.dataset.id;
-
-
-        if (!tripI
+renderTrips();
