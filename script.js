@@ -1,11 +1,7 @@
 /* =====================================================
-   WANDERLOG
-   Trip CRUD Application
-   JavaScript + DOM + localStorage
+   WANDERLOG WEEK 3
+   CRUD + PHOTO UPLOAD + FILEREADER + BASE64
    ===================================================== */
-
-
-/* ================= STORAGE KEY ================= */
 
 const STORAGE_KEY = "wanderlogTrips";
 
@@ -31,9 +27,6 @@ const tripNotes =
 const tripList =
     document.getElementById("trip-list");
 
-const emptyMessage =
-    document.getElementById("empty-message");
-
 const formMessage =
     document.getElementById("form-message");
 
@@ -46,20 +39,43 @@ const submitBtn =
 const cancelBtn =
     document.getElementById("cancel-btn");
 
+const imagePreviewContainer =
+    document.getElementById("image-preview-container");
+
+const imagePreview =
+    document.getElementById("image-preview");
+
+const removeImageBtn =
+    document.getElementById("remove-image-btn");
+
+const detailModal =
+    document.getElementById("trip-detail-modal");
+
+const detailContent =
+    document.getElementById("trip-detail-content");
+
+const closeDetailBtn =
+    document.getElementById("close-detail-btn");
+
 
 /* ================= EDIT STATE ================= */
-
-/*
-    null  = adding a new trip
-
-    trip ID = editing an existing trip
-*/
 
 let editingTripId = null;
 
 
+/*
+    Stores the Base64 image.
+
+    This is separate from the file input because
+    the FileReader converts the selected image
+    into a Base64 string.
+*/
+
+let selectedImageBase64 = "";
+
+
 /* =====================================================
-   READ TRIPS FROM LOCAL STORAGE
+   GET TRIPS
    ===================================================== */
 
 function getTrips() {
@@ -75,16 +91,14 @@ function getTrips() {
 
         const trips = JSON.parse(storedTrips);
 
-        if (Array.isArray(trips)) {
-            return trips;
-        }
-
-        return [];
+        return Array.isArray(trips)
+            ? trips
+            : [];
 
     } catch (error) {
 
         console.error(
-            "Error reading trips from localStorage:",
+            "Error reading trips:",
             error
         );
 
@@ -94,20 +108,39 @@ function getTrips() {
 
 
 /* =====================================================
-   SAVE TRIPS TO LOCAL STORAGE
+   SAVE TRIPS
    ===================================================== */
 
 function saveTrips(trips) {
 
-    localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(trips)
-    );
+    try {
+
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(trips)
+        );
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "Could not save trips:",
+            error
+        );
+
+        showMessage(
+            "Storage is full. Please use a smaller image.",
+            "error"
+        );
+
+        return false;
+    }
 }
 
 
 /* =====================================================
-   CREATE UNIQUE ID
+   CREATE ID
    ===================================================== */
 
 function createTripId() {
@@ -123,14 +156,12 @@ function createTripId() {
    ESCAPE HTML
    ===================================================== */
 
-/*
-    This prevents user-entered text from being treated
-    as HTML when trip cards are created.
-*/
-
 function escapeHTML(value) {
 
-    if (value === null || value === undefined) {
+    if (
+        value === null ||
+        value === undefined
+    ) {
         return "";
     }
 
@@ -153,9 +184,8 @@ function formatDate(dateString) {
         return "Date not available";
     }
 
-    const date = new Date(
-        dateString + "T00:00:00"
-    );
+    const date =
+        new Date(dateString + "T00:00:00");
 
     if (Number.isNaN(date.getTime())) {
         return dateString;
@@ -173,7 +203,7 @@ function formatDate(dateString) {
 
 
 /* =====================================================
-   SHOW FORM MESSAGE
+   MESSAGE
    ===================================================== */
 
 function showMessage(message, type) {
@@ -181,21 +211,127 @@ function showMessage(message, type) {
     formMessage.textContent = message;
 
     formMessage.className = type;
-
 }
 
-
-/* =====================================================
-   HIDE FORM MESSAGE
-   ===================================================== */
 
 function hideMessage() {
 
     formMessage.textContent = "";
 
     formMessage.className = "";
-
 }
+
+
+/* =====================================================
+   WEEK 3 — FILEREADER PHOTO PREVIEW
+   ===================================================== */
+
+tripImage.addEventListener(
+    "change",
+    function () {
+
+        const file = tripImage.files[0];
+
+        if (!file) {
+            return;
+        }
+
+
+        /* ---------- Check file type ---------- */
+
+        if (!file.type.startsWith("image/")) {
+
+            showMessage(
+                "Please select a valid image file.",
+                "error"
+            );
+
+            tripImage.value = "";
+
+            return;
+        }
+
+
+        /* ---------- Check file size ---------- */
+
+        const maxSize =
+            2 * 1024 * 1024;
+
+        if (file.size > maxSize) {
+
+            showMessage(
+                "Image must be smaller than 2 MB.",
+                "error"
+            );
+
+            tripImage.value = "";
+
+            return;
+        }
+
+
+        /*
+            FileReader converts the selected
+            image into a Base64 data URL.
+        */
+
+        const reader = new FileReader();
+
+
+        reader.onload = function (event) {
+
+            selectedImageBase64 =
+                event.target.result;
+
+
+            /*
+                Show live preview before
+                the trip is saved.
+            */
+
+            imagePreview.src =
+                selectedImageBase64;
+
+            imagePreviewContainer.style.display =
+                "block";
+
+            hideMessage();
+        };
+
+
+        reader.onerror = function () {
+
+            showMessage(
+                "Unable to read the selected image.",
+                "error"
+            );
+
+        };
+
+
+        reader.readAsDataURL(file);
+    }
+);
+
+
+/* =====================================================
+   REMOVE SELECTED IMAGE
+   ===================================================== */
+
+removeImageBtn.addEventListener(
+    "click",
+    function () {
+
+        tripImage.value = "";
+
+        selectedImageBase64 = "";
+
+        imagePreview.src = "";
+
+        imagePreviewContainer.style.display =
+            "none";
+    }
+);
 
 
 /* =====================================================
@@ -213,11 +349,6 @@ function validateForm() {
     const date =
         tripDate.value.trim();
 
-    const image =
-        tripImage.value.trim();
-
-
-    /* ---------- Title ---------- */
 
     if (!title) {
 
@@ -232,8 +363,6 @@ function validateForm() {
     }
 
 
-    /* ---------- Destination ---------- */
-
     if (!destination) {
 
         showMessage(
@@ -247,8 +376,6 @@ function validateForm() {
     }
 
 
-    /* ---------- Date ---------- */
-
     if (!date) {
 
         showMessage(
@@ -259,28 +386,6 @@ function validateForm() {
         tripDate.focus();
 
         return false;
-    }
-
-
-    /* ---------- Image URL ---------- */
-
-    if (image) {
-
-        try {
-
-            new URL(image);
-
-        } catch (error) {
-
-            showMessage(
-                "Please enter a valid image URL.",
-                "error"
-            );
-
-            tripImage.focus();
-
-            return false;
-        }
     }
 
 
@@ -298,7 +403,8 @@ function createTripObject() {
 
         id: createTripId(),
 
-        title: tripTitle.value.trim(),
+        title:
+            tripTitle.value.trim(),
 
         destination:
             tripDestination.value.trim(),
@@ -306,21 +412,25 @@ function createTripObject() {
         date:
             tripDate.value.trim(),
 
+        /*
+            WEEK 3:
+            Store the Base64 image.
+        */
+
         image:
-            tripImage.value.trim(),
+            selectedImageBase64,
 
         notes:
             tripNotes.value.trim(),
 
         createdAt:
             new Date().toISOString()
-
     };
 }
 
 
 /* =====================================================
-   CREATE TRIP
+   ADD TRIP
    ===================================================== */
 
 function addTrip() {
@@ -332,7 +442,9 @@ function addTrip() {
 
     trips.push(newTrip);
 
-    saveTrips(trips);
+    if (!saveTrips(trips)) {
+        return;
+    }
 
     renderTrips();
 
@@ -343,19 +455,10 @@ function addTrip() {
         "success"
     );
 
-
-    /*
-        Remove the success message after
-        a few seconds.
-    */
-
-    setTimeout(() => {
-
-        if (editingTripId === null) {
-            hideMessage();
-        }
-
-    }, 3000);
+    setTimeout(
+        hideMessage,
+        3000
+    );
 }
 
 
@@ -369,7 +472,8 @@ function updateTrip() {
 
     const tripIndex =
         trips.findIndex(
-            trip => trip.id === editingTripId
+            trip =>
+                trip.id === editingTripId
         );
 
 
@@ -385,9 +489,15 @@ function updateTrip() {
 
 
     /*
-        Keep the existing ID and createdAt.
-        Only update the editable fields.
+        If user selects a new image,
+        selectedImageBase64 contains it.
+
+        Otherwise keep existing image.
     */
+
+    const existingImage =
+        trips[tripIndex].image || "";
+
 
     trips[tripIndex] = {
 
@@ -403,7 +513,8 @@ function updateTrip() {
             tripDate.value.trim(),
 
         image:
-            tripImage.value.trim(),
+            selectedImageBase64 ||
+            existingImage,
 
         notes:
             tripNotes.value.trim(),
@@ -413,24 +524,23 @@ function updateTrip() {
     };
 
 
-    saveTrips(trips);
+    if (!saveTrips(trips)) {
+        return;
+    }
 
     renderTrips();
 
     resetForm();
-
 
     showMessage(
         "Trip updated successfully!",
         "success"
     );
 
-
-    setTimeout(() => {
-
-        hideMessage();
-
-    }, 3000);
+    setTimeout(
+        hideMessage,
+        3000
+    );
 }
 
 
@@ -444,7 +554,8 @@ function deleteTrip(tripId) {
 
     const trip =
         trips.find(
-            item => item.id === tripId
+            item =>
+                item.id === tripId
         );
 
 
@@ -458,11 +569,6 @@ function deleteTrip(tripId) {
         return;
     }
 
-
-    /*
-        Confirmation step required by
-        the CodGen Week 2 task.
-    */
 
     const confirmed =
         window.confirm(
@@ -477,7 +583,8 @@ function deleteTrip(tripId) {
 
     const updatedTrips =
         trips.filter(
-            item => item.id !== tripId
+            item =>
+                item.id !== tripId
         );
 
 
@@ -485,29 +592,15 @@ function deleteTrip(tripId) {
 
     renderTrips();
 
-
-    /*
-        If the deleted trip was being edited,
-        reset the form.
-    */
-
-    if (editingTripId === tripId) {
-
-        resetForm();
-    }
-
-
     showMessage(
         "Trip deleted successfully.",
         "success"
     );
 
-
-    setTimeout(() => {
-
-        hideMessage();
-
-    }, 3000);
+    setTimeout(
+        hideMessage,
+        3000
+    );
 }
 
 
@@ -521,7 +614,8 @@ function editTrip(tripId) {
 
     const trip =
         trips.find(
-            item => item.id === tripId
+            item =>
+                item.id === tripId
         );
 
 
@@ -536,16 +630,8 @@ function editTrip(tripId) {
     }
 
 
-    /*
-        Store which trip is being edited.
-    */
-
     editingTripId = tripId;
 
-
-    /*
-        Fill the form with existing data.
-    */
 
     tripTitle.value =
         trip.title || "";
@@ -556,17 +642,35 @@ function editTrip(tripId) {
     tripDate.value =
         trip.date || "";
 
-    tripImage.value =
-        trip.image || "";
-
     tripNotes.value =
         trip.notes || "";
 
 
     /*
-        Change UI from Add mode
-        to Edit mode.
+        Load existing Base64 image
+        into preview.
     */
+
+    selectedImageBase64 =
+        trip.image || "";
+
+
+    if (selectedImageBase64) {
+
+        imagePreview.src =
+            selectedImageBase64;
+
+        imagePreviewContainer.style.display =
+            "block";
+
+    } else {
+
+        imagePreview.src = "";
+
+        imagePreviewContainer.style.display =
+            "none";
+    }
+
 
     formHeading.textContent =
         "Edit Trip";
@@ -574,10 +678,6 @@ function editTrip(tripId) {
     submitBtn.textContent =
         "Update Trip";
 
-
-    /*
-        Scroll the user to the form.
-    */
 
     document
         .getElementById("add-trip")
@@ -587,9 +687,48 @@ function editTrip(tripId) {
 
 
     showMessage(
-        "Edit your trip details and click Update Trip.",
+        "Edit your trip and click Update Trip.",
         "success"
     );
+}
+
+
+/* =====================================================
+   IMAGE HTML
+   ===================================================== */
+
+function createImageHTML(trip) {
+
+    if (trip.image) {
+
+        return `
+
+            <img
+                src="${escapeHTML(trip.image)}"
+                alt="${escapeHTML(trip.title)}"
+                class="trip-image"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+            >
+
+            <div
+                class="trip-image-placeholder"
+                style="display:none;"
+            >
+                🌍
+            </div>
+
+        `;
+
+    }
+
+
+    return `
+
+        <div class="trip-image-placeholder">
+            🌍
+        </div>
+
+    `;
 }
 
 
@@ -601,17 +740,10 @@ function renderTrips() {
 
     const trips = getTrips();
 
-
-    /*
-        Clear the existing dynamic cards.
-    */
-
     tripList.innerHTML = "";
 
 
-    /* =================================================
-       EMPTY STATE
-       ================================================= */
+    /* ================= EMPTY STATE ================= */
 
     if (trips.length === 0) {
 
@@ -646,123 +778,229 @@ function renderTrips() {
     }
 
 
-    /* =================================================
-       CREATE DYNAMIC TRIP CARDS
-       ================================================= */
+    /* ================= CARDS ================= */
 
-    trips.forEach(trip => {
+    trips.forEach(
+        function (trip) {
 
-        const card =
-            document.createElement("article");
+            const card =
+                document.createElement("article");
 
-        card.className = "trip-card";
-
-
-        /* ---------- Image ---------- */
-
-        let imageHTML = "";
+            card.className =
+                "trip-card";
 
 
-        if (trip.image) {
-
-            imageHTML = `
-
-                <img
-                    src="${escapeHTML(trip.image)}"
-                    alt="${escapeHTML(trip.title)}"
-                    class="trip-image"
-                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-                >
-
-                <div
-                    class="trip-image-placeholder"
-                    style="display:none;"
-                >
-                    🌍
-                </div>
-
-            `;
-
-        } else {
-
-            imageHTML = `
-
-                <div class="trip-image-placeholder">
-                    🌍
-                </div>
-
-            `;
-        }
+            const notesHTML =
+                trip.notes
+                    ? `
+                        <p class="trip-notes">
+                            <strong>Notes:</strong>
+                            ${escapeHTML(trip.notes)}
+                        </p>
+                      `
+                    : "";
 
 
-        /* ---------- Notes ---------- */
+            card.innerHTML = `
 
-        const notesHTML =
-            trip.notes
-                ? `
-                    <p class="trip-notes">
-                        <strong>Notes:</strong>
-                        ${escapeHTML(trip.notes)}
+                ${createImageHTML(trip)}
+
+                <div class="trip-content">
+
+                    <h3>
+                        ${escapeHTML(trip.title)}
+                    </h3>
+
+                    <p>
+                        <strong>📍 Destination:</strong>
+                        ${escapeHTML(trip.destination)}
                     </p>
-                  `
-                : "";
+
+                    <p>
+                        <strong>📅 Travel Date:</strong>
+                        ${formatDate(trip.date)}
+                    </p>
+
+                    ${notesHTML}
 
 
-        /* ---------- Complete Card ---------- */
+                    <div class="trip-actions">
 
-        card.innerHTML = `
+                        <button
+                            type="button"
+                            class="view-btn"
+                            data-action="view"
+                            data-id="${escapeHTML(trip.id)}"
+                        >
+                            👁️ View
+                        </button>
 
-            ${imageHTML}
+                        <button
+                            type="button"
+                            class="edit-btn"
+                            data-action="edit"
+                            data-id="${escapeHTML(trip.id)}"
+                        >
+                            ✏️ Edit
+                        </button>
 
-            <div class="trip-content">
+                        <button
+                            type="button"
+                            class="delete-btn"
+                            data-action="delete"
+                            data-id="${escapeHTML(trip.id)}"
+                        >
+                            🗑️ Delete
+                        </button>
 
-                <h3>
-                    ${escapeHTML(trip.title)}
-                </h3>
-
-                <p>
-                    <strong>📍 Destination:</strong>
-                    ${escapeHTML(trip.destination)}
-                </p>
-
-                <p>
-                    <strong>📅 Travel Date:</strong>
-                    ${formatDate(trip.date)}
-                </p>
-
-                ${notesHTML}
-
-
-                <div class="trip-actions">
-
-                    <button
-                        type="button"
-                        class="edit-btn"
-                        data-action="edit"
-                        data-id="${escapeHTML(trip.id)}"
-                    >
-                        ✏️ Edit
-                    </button>
-
-                    <button
-                        type="button"
-                        class="delete-btn"
-                        data-action="delete"
-                        data-id="${escapeHTML(trip.id)}"
-                    >
-                        🗑️ Delete
-                    </button>
+                    </div>
 
                 </div>
+            `;
 
+
+            tripList.appendChild(card);
+
+        }
+    );
+}
+
+
+/* =====================================================
+   VIEW TRIP DETAIL
+   ===================================================== */
+
+function viewTrip(tripId) {
+
+    const trips = getTrips();
+
+    const trip =
+        trips.find(
+            item =>
+                item.id === tripId
+        );
+
+
+    if (!trip) {
+        return;
+    }
+
+
+    let imageHTML;
+
+
+    if (trip.image) {
+
+        imageHTML = `
+
+            <img
+                src="${escapeHTML(trip.image)}"
+                alt="${escapeHTML(trip.title)}"
+                class="detail-image"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+            >
+
+            <div
+                class="detail-placeholder"
+                style="display:none;"
+            >
+                🌍
             </div>
+
         `;
 
+    } else {
 
-        tripList.appendChild(card);
+        imageHTML = `
 
-    });
+            <div class="detail-placeholder">
+                🌍
+            </div>
+
+        `;
+    }
+
+
+    detailContent.innerHTML = `
+
+        ${imageHTML}
+
+        <div class="detail-content">
+
+            <h2>
+                ${escapeHTML(trip.title)}
+            </h2>
+
+            <p>
+                <strong>📍 Destination:</strong>
+                ${escapeHTML(trip.destination)}
+            </p>
+
+            <p>
+                <strong>📅 Travel Date:</strong>
+                ${formatDate(trip.date)}
+            </p>
+
+            ${
+                trip.notes
+                    ? `
+                        <div class="detail-notes">
+
+                            <strong>Notes</strong>
+
+                            <p>
+                                ${escapeHTML(trip.notes)}
+                            </p>
+
+                        </div>
+                      `
+                    : ""
+            }
+
+        </div>
+    `;
+
+
+    detailModal.classList.add("active");
+
+    detailModal.setAttribute(
+        "aria-hidden",
+        "false"
+    );
 }
+
+
+/* =====================================================
+   CLOSE DETAIL
+   ===================================================== */
+
+function closeDetail() {
+
+    detailModal.classList.remove("active");
+
+    detailModal.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+}
+
+
+closeDetailBtn.addEventListener(
+    "click",
+    closeDetail
+);
+
+
+detailModal.addEventListener(
+    "click",
+    function (event) {
+
+        if (event.target === detailModal) {
+            closeDetail();
+        }
+
+    }
+);
 
 
 /* =====================================================
@@ -775,14 +1013,18 @@ function resetForm() {
 
     editingTripId = null;
 
+    selectedImageBase64 = "";
+
+    imagePreview.src = "";
+
+    imagePreviewContainer.style.display =
+        "none";
 
     formHeading.textContent =
         "Add a New Trip";
 
-
     submitBtn.textContent =
         "Add Trip";
-
 
     hideMessage();
 }
@@ -799,25 +1041,10 @@ tripForm.addEventListener(
         event.preventDefault();
 
 
-        /*
-            Validate before Create or Update.
-        */
-
-        const isValid =
-            validateForm();
-
-
-        if (!isValid) {
+        if (!validateForm()) {
             return;
         }
 
-
-        /*
-            If editingTripId exists,
-            update the existing trip.
-
-            Otherwise create a new trip.
-        */
 
         if (editingTripId !== null) {
 
@@ -834,7 +1061,7 @@ tripForm.addEventListener(
 
 
 /* =====================================================
-   CANCEL BUTTON
+   CANCEL
    ===================================================== */
 
 cancelBtn.addEventListener(
@@ -843,11 +1070,6 @@ cancelBtn.addEventListener(
 
         resetForm();
 
-        /*
-            Scroll back to Add Trip section
-            if user was editing.
-        */
-
     }
 );
 
@@ -855,12 +1077,6 @@ cancelBtn.addEventListener(
 /* =====================================================
    EVENT DELEGATION
    ===================================================== */
-
-/*
-    Instead of adding separate event listeners
-    to every card button, we use one listener
-    on the trip list.
-*/
 
 tripList.addEventListener(
     "click",
@@ -882,46 +1098,4 @@ tripList.addEventListener(
             button.dataset.id;
 
 
-        if (!tripId) {
-            return;
-        }
-
-
-        /* ---------- Edit ---------- */
-
-        if (action === "edit") {
-
-            editTrip(tripId);
-
-        }
-
-
-        /* ---------- Delete ---------- */
-
-        if (action === "delete") {
-
-            deleteTrip(tripId);
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   LOAD TRIPS WHEN PAGE OPENS
-   ===================================================== */
-
-/*
-    READ operation:
-    Get trips from localStorage and display them.
-*/
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
-
-        renderTrips();
-
-    }
-);
+        if (!tripI
