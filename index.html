@@ -22,24 +22,13 @@
             </a>
 
             <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#destinations">Destinations</a></li>
+                <li><a href="#add-trip">Add Trip</a></li>
+                <li><a href="#my-trips">My Trips</a></li>
+                <li><a href="#about">About</a></li>
                 <li>
-                    <a href="#home">Home</a>
-                </li>
-
-                <li>
-                    <a href="#destinations">Destinations</a>
-                </li>
-
-                <li>
-                    <a href="#add-trip">Add Trip</a>
-                </li>
-
-                <li>
-                    <a href="#my-trips">My Trips</a>
-                </li>
-
-                <li>
-                    <a href="#about">About</a>
+                    <a href="profile.html?user=Aadarshini">Profile</a>
                 </li>
             </ul>
 
@@ -83,9 +72,7 @@
 
         <section id="destinations">
 
-            <h2>
-                Popular Destinations
-            </h2>
+            <h2>Popular Destinations</h2>
 
             <p class="section-description">
                 Get inspired for your next adventure.
@@ -94,53 +81,21 @@
             <div class="destinations-container">
 
                 <div class="destination-card">
-
-                    <div class="destination-icon">
-                        🇫🇷
-                    </div>
-
-                    <h3>
-                        Paris
-                    </h3>
-
-                    <p>
-                        Explore the beautiful city of Paris.
-                    </p>
-
+                    <div class="destination-icon">🇫🇷</div>
+                    <h3>Paris</h3>
+                    <p>Explore the beautiful city of Paris.</p>
                 </div>
 
-
                 <div class="destination-card">
-
-                    <div class="destination-icon">
-                        🇯🇵
-                    </div>
-
-                    <h3>
-                        Tokyo
-                    </h3>
-
-                    <p>
-                        Discover the amazing culture of Tokyo.
-                    </p>
-
+                    <div class="destination-icon">🇯🇵</div>
+                    <h3>Tokyo</h3>
+                    <p>Discover the amazing culture of Tokyo.</p>
                 </div>
 
-
                 <div class="destination-card">
-
-                    <div class="destination-icon">
-                        🇦🇪
-                    </div>
-
-                    <h3>
-                        Dubai
-                    </h3>
-
-                    <p>
-                        Experience the modern city of Dubai.
-                    </p>
-
+                    <div class="destination-icon">🇦🇪</div>
+                    <h3>Dubai</h3>
+                    <p>Experience the modern city of Dubai.</p>
                 </div>
 
             </div>
@@ -160,10 +115,7 @@
                 Create and save your next travel adventure.
             </p>
 
-
             <form id="trip-form" novalidate>
-
-                <!-- Trip Title -->
 
                 <div class="form-group">
 
@@ -183,8 +135,6 @@
                 </div>
 
 
-                <!-- Destination -->
-
                 <div class="form-group">
 
                     <label for="trip-destination">
@@ -203,8 +153,6 @@
                 </div>
 
 
-                <!-- Date -->
-
                 <div class="form-group">
 
                     <label for="trip-date">
@@ -221,29 +169,52 @@
                 </div>
 
 
-                <!-- Image -->
+                <!-- ================= WEEK 3 PHOTO UPLOAD ================= -->
 
                 <div class="form-group">
 
                     <label for="trip-image">
-                        Cover Image URL
+                        Cover Photo
                     </label>
 
                     <input
-                        type="url"
+                        type="file"
                         id="trip-image"
                         name="image"
-                        placeholder="https://example.com/image.jpg"
+                        accept="image/*"
                     >
 
                     <small>
-                        Optional — add an image URL for your trip.
+                        Upload an image for your trip cover.
                     </small>
+
+                    <!-- Live preview -->
+
+                    <div
+                        id="image-preview-container"
+                        class="image-preview-container"
+                        style="display: none;"
+                    >
+
+                        <img
+                            id="image-preview"
+                            class="image-preview"
+                            src=""
+                            alt="Selected trip preview"
+                        >
+
+                        <button
+                            type="button"
+                            id="remove-image-btn"
+                            class="remove-image-btn"
+                        >
+                            Remove Photo
+                        </button>
+
+                    </div>
 
                 </div>
 
-
-                <!-- Notes -->
 
                 <div class="form-group">
 
@@ -265,12 +236,8 @@
                 </div>
 
 
-                <!-- Message -->
-
                 <p id="form-message"></p>
 
-
-                <!-- Buttons -->
 
                 <div class="form-buttons">
 
@@ -280,7 +247,6 @@
                     >
                         Add Trip
                     </button>
-
 
                     <button
                         type="button"
@@ -301,20 +267,11 @@
 
         <section id="my-trips">
 
-            <h2>
-                My Trips
-            </h2>
+            <h2>My Trips</h2>
 
             <p class="section-description">
                 Your saved adventures appear here.
             </p>
-
-
-            <!--
-                IMPORTANT:
-                JavaScript dynamically creates trip cards here.
-                Do NOT add hardcoded trip cards.
-            -->
 
             <div id="trip-list">
 
@@ -324,15 +281,16 @@
                         🌍
                     </div>
 
-                    <h3>
-                        No trips added yet
-                    </h3>
+                    <h3>No trips added yet</h3>
 
                     <p>
                         Start planning your next adventure!
                     </p>
 
-                    <a href="#add-trip" class="empty-btn">
+                    <a
+                        href="#add-trip"
+                        class="empty-btn"
+                    >
                         Add Your First Trip
                     </a>
 
@@ -347,9 +305,7 @@
 
         <section id="about">
 
-            <h2>
-                About Wanderlog
-            </h2>
+            <h2>About Wanderlog</h2>
 
             <p>
                 Wanderlog helps you discover beautiful destinations,
@@ -367,6 +323,31 @@
     </main>
 
 
+    <!-- ================= TRIP DETAIL MODAL ================= -->
+
+    <div
+        id="trip-detail-modal"
+        class="trip-detail-modal"
+        aria-hidden="true"
+    >
+
+        <div class="trip-detail-box">
+
+            <button
+                type="button"
+                id="close-detail-btn"
+                class="close-detail-btn"
+            >
+                ✕
+            </button>
+
+            <div id="trip-detail-content"></div>
+
+        </div>
+
+    </div>
+
+
     <!-- ================= FOOTER ================= -->
 
     <footer>
@@ -378,10 +359,8 @@
     </footer>
 
 
-    <!-- JavaScript -->
-
     <script src="script.js"></script>
 
 </body>
 
-    </html>
+                </html>
