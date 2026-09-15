@@ -1280,5 +1280,294 @@ function setupDestinationButtons() {
 
                         const field =
                             document.getElementById(
-                                "trip-destination"
+                                "trip-destination");
+
+
+                        if (field) {
+
+                            field.value =
+                                destination;
+
+                            field.focus();
+
+                        }
+
+
+                        document
+                            .getElementById(
+                                "add-trip"
+                            )
+                            ?.scrollIntoView({
+                                behavior:
+                                    "smooth"
+                            });
+
+
+                        showToast(
+                            destination +
+                            " selected."
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+            }
+/* ================= MODAL ================= */
+
+function setupModal() {
+
+    document
+        .querySelectorAll(
+            "[data-close-modal]"
+        )
+        .forEach(
+            function(element) {
+
+                element.addEventListener(
+                    "click",
+                    closeModal
+                );
+
+            }
+        );
+
+
+    document.addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                event.key === "Escape"
+            ) {
+
+                closeModal();
+
+            }
+
+        }
+    );
+
+}
+
+
+function openModal(trip) {
+
+    const modal =
+        document.getElementById(
+            "trip-modal"
+        );
+
+
+    if (!modal) return;
+
+
+    const image =
+        document.getElementById(
+            "modal-image"
+        );
+
+
+    image.src =
+        trip.image ||
+        DEFAULT_IMAGE;
+
+
+    image.alt =
+        trip.title +
+        " cover image";
+
+
+    image.onerror =
+        function() {
+
+            image.src =
+                DEFAULT_IMAGE;
+
+        };
+
+
+    document
+        .getElementById(
+            "modal-date"
+        )
+        .textContent =
+        formatDate(
+            trip.date
+        );
+
+
+    document
+        .getElementById(
+            "modal-title"
+        )
+        .textContent =
+        trip.title;
+
+
+    document
+        .getElementById(
+            "modal-destination"
+        )
+        .textContent =
+        trip.destination;
+
+
+    document
+        .getElementById(
+            "modal-notes"
+        )
+        .textContent =
+        trip.notes ||
+        "No notes were added.";
+
+
+    modal.classList.remove(
+        "hidden"
+    );
+
+
+    document.body.style.overflow =
+        "hidden";
+
+
+    document
+        .querySelector(
+            ".modal-close"
+        )
+        ?.focus();
+
+}
+
+
+function closeModal() {
+
+    const modal =
+        document.getElementById(
+            "trip-modal"
+        );
+
+
+    if (!modal) return;
+
+
+    modal.classList.add(
+        "hidden"
+    );
+
+
+    document.body.style.overflow =
+        "";
+
+}
+
+
+/* ================= IMAGE FALLBACK ================= */
+
+function setupImageFallback() {
+
+    document
+        .querySelectorAll(
+            "img"
+        )
+        .forEach(
+            function(image) {
+
+                image.addEventListener(
+                    "error",
+                    function() {
+
+                        if (
+                            image.dataset.fallback
+                        ) {
+
+                            return;
+
+                        }
+
+                        image.dataset.fallback =
+                            "true";
+
+                        image.src =
+                            DEFAULT_IMAGE;
+
+                    }
+                );
+
+            }
+        );
+
+}
+
+
+/* ================= PROFILE ================= */
+
+function setupProfile() {
+
+    const total =
+        document.getElementById(
+            "profile-trip-count"
+        );
+
+
+    if (!total) return;
+
+
+    const destinationCount =
+        new Set(
+            trips.map(
+                trip =>
+                    trip.destination
+                        .trim()
+                        .toLowerCase()
+            )
+        ).size;
+
+
+    const upcoming =
+        trips.filter(
+            trip =>
+                isUpcoming(
+                    trip.date
+                )
+        ).length;
+
+
+    const notes =
+        trips.filter(
+            trip =>
+                trip.notes &&
+                trip.notes.trim()
+        ).length;
+
+
+    total.textContent =
+        trips.length;
+
+
+    document
+        .getElementById(
+            "profile-destination-count"
+        ).textContent =
+        destinationCount;
+
+
+    document
+        .getElementById(
+            "profile-upcoming-count"
+        ).textContent =
+        upcoming;
+
+
+    document
+        .getElementById(
+            "profile-note-count"
+        ).textContent =
+        notes;
+
+}
+
+
         
