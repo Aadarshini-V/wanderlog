@@ -1,12 +1,26 @@
 # Wanderlog ✈️
 
-Wanderlog is a responsive travel planning website created for the **CodGen Frontend Internship – Week 4 task**.
+Wanderlog is a responsive travel planning website created for the
+**CodGen Frontend Internship – Week 4: Polish & Deployment task**.
 
-It allows users to create, manage, search and view their travel plans directly in the browser.
+It allows users to create, manage, search and view their travel plans
+directly in the browser.
 
 ---
 
-## 🌍 Features
+## 🌍 Live Demo
+
+🔗 https://aadarshini-v.github.io/wanderlog/
+
+---
+
+## 💻 GitHub Repository
+
+🔗 https://github.com/Aadarshini-V/wanderlog
+
+---
+
+## ✨ Features
 
 - Responsive design
 - Home page
@@ -18,13 +32,16 @@ It allows users to create, manage, search and view their travel plans directly i
 - Search trips
 - LocalStorage data persistence
 - Form validation
-- Error messages
+- Friendly error messages
+- Empty-state handling
+- No-search-results handling
 - Broken image fallback
 - Toast notifications
 - Responsive navigation menu
-- Accessibility support
+- Keyboard accessibility
+- Skip-to-content accessibility link
 - Travel profile page
-- Trip statistics
+- Automatic trip statistics
 - Mobile, tablet and desktop support
 
 ---
