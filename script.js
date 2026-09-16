@@ -1,945 +1,1617 @@
-<!DOCTYPE html>
-<html lang="en">
+"use strict";
 
-<head>
+/* ================= SETTINGS ================= */
 
-    <meta charset="UTF-8">
+const STORAGE_KEY = "wanderlogTrips";
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
+const DEFAULT_IMAGE =
+    "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1000&q=80";
 
-    <meta
-        name="description"
-        content="Wanderlog travel planner - plan, save and manage your trips.">
+let trips = [];
+let toastTimer;
 
-    <title>Wanderlog | Travel Planner</title>
 
-    <link
-        rel="stylesheet"
-        href="style.css">
+/* ================= START ================= */
 
-</head>
+document.addEventListener("DOMContentLoaded", initialize);
 
-<body>
 
-<a href="#main-content" class="skip-link">
-    Skip to main content
-</a>
+function initialize() {
 
+    trips = loadTrips();
 
-<!-- ================= HEADER ================= -->
+    setYear();
+    setupNavigation();
+    setupForm();
+    setupTripActions();
+    setupSearch();
+    setupDestinationButtons();
+    setupModal();
+    setupImageFallback();
+    setupProfile();
 
-<header class="site-header">
+    renderTrips();
 
-    <nav class="navbar container">
+}
 
-        <a
-            href="index.html"
-            class="brand"
-            aria-label="Wanderlog home">
 
-            <span class="brand-icon">
-                ✈
-            </span>
+/* ================= STORAGE ================= */
 
-            <span>
-                Wanderlog
-            </span>
+function loadTrips() {
 
-        </a>
+    try {
 
+        const saved = localStorage.getItem(STORAGE_KEY);
 
-        <button
-            id="menu-toggle"
-            class="menu-toggle"
-            type="button"
-            aria-label="Open navigation menu"
-            aria-expanded="false"
-            aria-controls="nav-links">
+        if (!saved) {
+            return [];
+        }
 
-            <span></span>
-            <span></span>
-            <span></span>
+        const parsed = JSON.parse(saved);
 
-        </button>
+        if (!Array.isArray(parsed)) {
+            return [];
+        }
 
+        return parsed;
 
-        <ul
-            id="nav-links"
-            class="nav-links">
+    } catch (error) {
 
-            <li>
-                <a
-                    href="#home"
-                    class="nav-link active">
-                    Home
-                </a>
-            </li>
+        console.error("Error loading trips:", error);
 
-            <li>
-                <a
-                    href="#destinations"
-                    class="nav-link">
-                    Destinations
-                </a>
-            </li>
+        return [];
 
-            <li>
-                <a
-                    href="#add-trip"
-                    class="nav-link">
-                    Add Trip
-                </a>
-            </li>
+    }
 
-            <li>
-                <a
-                    href="#my-trips"
-                    class="nav-link">
-                    My Trips
-                </a>
-            </li>
+}
 
-            <li>
-                <a
-                    href="profile.html"
-                    class="profile-link">
-                    Profile
-                </a>
-            </li>
 
-        </ul>
+function saveTrips() {
 
-    </nav>
+    try {
 
-</header>
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(trips)
+        );
 
+        return true;
 
-<!-- ================= MAIN ================= -->
+    } catch (error) {
 
-<main id="main-content">
+        console.error("Error saving trips:", error);
 
+        showToast("Unable to save trip.");
 
-<!-- ================= HERO ================= -->
+        return false;
 
-<section
-    id="home"
-    class="hero">
+    }
 
-    <div class="container hero-grid">
+}
 
 
-        <div>
+/* ================= YEAR ================= */
 
-            <p class="eyebrow">
-                PLAN • EXPLORE • REMEMBER
-            </p>
+function setYear() {
 
-            <h1>
-                Your next
-                adventure
-                starts here.
-            </h1>
+    const year = document.getElementById("year");
 
-            <p class="hero-description">
+    if (year) {
+        year.textContent = new Date().getFullYear();
+    }
 
-                Plan beautiful trips, save your
-                favourite destinations and keep
-                every travel memory organized
-                in one place.
+}
 
-            </p>
 
+/* ================= ESCAPE HTML ================= */
 
-            <div class="hero-buttons">
+function escapeHTML(value) {
 
-                <a
-                    href="#add-trip"
-                    class="btn btn-primary">
+    return String(value ?? "")
+        .replace(/[&<>"']/g, function(character) {
 
-                    ✈ Plan a trip
+            const entities = {
 
-                </a>
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#039;"
 
-                <a
-                    href="#destinations"
-                    class="btn btn-secondary">
+            };
 
-                    Explore destinations
+            return entities[character];
 
-                </a>
+        });
 
-            </div>
+}
 
 
-            <div class="hero-stats">
+/* ================= DATE ================= */
 
-                <div>
+function formatDate(dateString) {
 
-                    <strong id="hero-trip-count">
-                        0
-                    </strong>
+    if (!dateString) {
+        return "Date not set";
+    }
 
-                    <span>
-                        Saved trips
-                    </span>
+    const date = new Date(dateString + "T00:00:00");
 
-                </div>
+    if (Number.isNaN(date.getTime())) {
+        return "Date not set";
+    }
 
+    return new Intl.DateTimeFormat("en-IN", {
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+    }).format(date);
 
-                <div>
+}
 
-                    <strong>
-                        Local
-                    </strong>
 
-                    <span>
-                        Browser storage
-                    </span>
+/* ================= UPCOMING ================= */
 
-                </div>
+function isUpcoming(dateString) {
 
+    if (!dateString) {
+        return false;
+    }
 
-                <div>
+    const today = new Date();
 
-                    <strong>
-                        100%
-                    </strong>
+    today.setHours(
+        0,
+        0,
+        0,
+        0
+    );
 
-                    <span>
-                        Responsive
-                    </span>
+    const date = new Date(
+        dateString + "T00:00:00"
+    );
 
-                </div>
+    return date >= today;
 
-            </div>
+}
 
-        </div>
 
+/* ================= TOAST ================= */
 
-        <!-- HERO CARD -->
+function showToast(message) {
 
-        <article class="hero-card">
+    const toast = document.getElementById("toast");
 
-            <div class="hero-image">
+    if (!toast) {
+        return;
+    }
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+    clearTimeout(toastTimer);
+
+    toastTimer = setTimeout(function() {
+
+        toast.classList.remove("show");
+
+    }, 2500);
+
+}
+
+
+/* ================= NAVIGATION ================= */
+
+function setupNavigation() {
+
+    const toggle =
+        document.getElementById("menu-toggle");
+
+    const nav =
+        document.getElementById("nav-links");
+
+    if (toggle && nav) {
+
+        toggle.addEventListener(
+            "click",
+            function() {
+
+                const opened =
+                    nav.classList.toggle("open");
+
+                toggle.setAttribute(
+                    "aria-expanded",
+                    String(opened)
+                );
+
+                toggle.setAttribute(
+                    "aria-label",
+                    opened
+                        ? "Close navigation menu"
+                        : "Open navigation menu"
+                );
+
+            }
+        );
+
+    }
+
+
+    document
+        .querySelectorAll("#nav-links a")
+        .forEach(function(link) {
+
+            link.addEventListener(
+                "click",
+                function() {
+
+                    nav?.classList.remove("open");
+
+                    toggle?.setAttribute(
+                        "aria-expanded",
+                        "false"
+                    );
+
+                    toggle?.setAttribute(
+                        "aria-label",
+                        "Open navigation menu"
+                    );
+
+                }
+            );
+
+        });
+
+}
+
+
+/* ================= FORM ================= */
+
+function setupForm() {
+
+    const form =
+        document.getElementById("trip-form");
+
+    if (!form) {
+        return;
+    }
+
+
+    form.addEventListener(
+        "submit",
+        handleSubmit
+    );
+
+
+    const cancelButton =
+        document.getElementById("cancel-btn");
+
+    if (cancelButton) {
+
+        cancelButton.addEventListener(
+            "click",
+            resetForm
+        );
+
+    }
+
+
+    const notes =
+        document.getElementById("trip-notes");
+
+    const notesCount =
+        document.getElementById("notes-count");
+
+
+    if (notes && notesCount) {
+
+        notes.addEventListener(
+            "input",
+            function(event) {
+
+                notesCount.textContent =
+                    event.target.value.length;
+
+            }
+        );
+
+    }
+
+}
+
+
+/* ================= VALIDATION ================= */
+
+function validateForm() {
+
+    clearErrors();
+
+    let valid = true;
+
+
+    const title =
+        document.getElementById("trip-title");
+
+    const destination =
+        document.getElementById("trip-destination");
+
+    const date =
+        document.getElementById("trip-date");
+
+    const image =
+        document.getElementById("trip-image");
+
+
+    if (!title || !title.value.trim()) {
+
+        if (title) {
+
+            showFieldError(
+                title,
+                "title-error",
+                "Please enter a trip title."
+            );
+
+        }
+
+        valid = false;
+
+    }
+
+
+    if (
+        !destination ||
+        !destination.value.trim()
+    ) {
+
+        if (destination) {
+
+            showFieldError(
+                destination,
+                "destination-error",
+                "Please enter a destination."
+            );
+
+        }
+
+        valid = false;
+
+    }
+
+
+    if (!date || !date.value) {
+
+        if (date) {
+
+            showFieldError(
+                date,
+                "date-error",
+                "Please choose a travel date."
+            );
+
+        }
+
+        valid = false;
+
+    }
+
+
+    if (image && image.value.trim()) {
+
+        try {
+
+            const url =
+                new URL(
+                    image.value.trim()
+                );
+
+            if (
+                url.protocol !== "http:" &&
+                url.protocol !== "https:"
+            ) {
+
+                throw new Error(
+                    "Invalid protocol"
+                );
+
+            }
+
+        } catch (error) {
+
+            showFieldError(
+                image,
+                "image-error",
+                "Enter a valid image URL."
+            );
+
+            valid = false;
+
+        }
+
+    }
+
+
+    if (!valid) {
+
+        showFormMessage(
+            "Please correct the highlighted fields.",
+            "error"
+        );
+
+    }
+
+
+    return valid;
+
+}
+
+
+function showFieldError(
+    input,
+    errorId,
+    message
+) {
+
+    input.classList.add("invalid");
+
+    const errorElement =
+        document.getElementById(errorId);
+
+    if (errorElement) {
+
+        errorElement.textContent =
+            message;
+
+    }
+
+}
+
+
+function clearErrors() {
+
+    document
+        .querySelectorAll(".field-error")
+        .forEach(function(element) {
+
+            element.textContent = "";
+
+        });
+
+
+    document
+        .querySelectorAll("#trip-form input, #trip-form textarea")
+        .forEach(function(input) {
+
+            input.classList.remove("invalid");
+
+        });
+
+}
+
+
+function showFormMessage(
+    message,
+    type
+) {
+
+    const box =
+        document.getElementById("form-message");
+
+    if (!box) {
+        return;
+    }
+
+    box.textContent = message;
+
+    box.className =
+        type
+            ? "form-message " + type
+            : "form-message";
+
+}
+
+
+/* ================= ADD / UPDATE ================= */
+
+function handleSubmit(event) {
+
+    event.preventDefault();
+
+
+    if (!validateForm()) {
+        return;
+    }
+
+
+    const editInput =
+        document.getElementById("edit-id");
+
+    const titleInput =
+        document.getElementById("trip-title");
+
+    const destinationInput =
+        document.getElementById("trip-destination");
+
+    const dateInput =
+        document.getElementById("trip-date");
+
+    const imageInput =
+        document.getElementById("trip-image");
+
+    const notesInput =
+        document.getElementById("trip-notes");
+
+
+    const editId =
+        editInput?.value || "";
+
+
+    const title =
+        titleInput.value.trim();
+
+
+    const destination =
+        destinationInput.value.trim();
+
+
+    const date =
+        dateInput.value;
+
+
+    const image =
+        imageInput?.value.trim() || "";
+
+
+    const notes =
+        notesInput?.value.trim() || "";
+
+
+    const id =
+        editId ||
+        Date.now().toString();
+
+
+    const trip = {
+
+        id: id,
+
+        title: title,
+
+        destination: destination,
+
+        date: date,
+
+        image: image || DEFAULT_IMAGE,
+
+        notes: notes
+
+    };
+
+
+    if (editId) {
+
+        const index =
+            trips.findIndex(function(item) {
+
+                return item.id === editId;
+
+            });
+
+
+        if (index !== -1) {
+
+            trips[index] = trip;
+
+            if (saveTrips()) {
+
+                renderTrips();
+
+                resetForm();
+
+                showToast(
+                    "Trip updated successfully!"
+                );
+
+            }
+
+            return;
+
+        }
+
+    }
+
+
+    trips.push(trip);
+
+
+    if (saveTrips()) {
+
+        renderTrips();
+
+        resetForm();
+
+        showToast(
+            "Trip saved successfully!"
+        );
+
+
+        document
+            .getElementById("my-trips")
+            ?.scrollIntoView({
+                behavior: "smooth"
+            });
+
+    }
+
+}
+
+
+/* ================= RESET FORM ================= */
+
+function resetForm() {
+
+    const form =
+        document.getElementById("trip-form");
+
+    if (!form) {
+        return;
+    }
+
+
+    form.reset();
+
+
+    const editId =
+        document.getElementById("edit-id");
+
+    if (editId) {
+        editId.value = "";
+    }
+
+
+    const submitText =
+        document.getElementById("submit-text");
+
+    if (submitText) {
+
+        submitText.textContent =
+            "Save trip";
+
+    }
+
+
+    const notesCount =
+        document.getElementById("notes-count");
+
+    if (notesCount) {
+
+        notesCount.textContent =
+            "0";
+
+    }
+
+
+    clearErrors();
+
+    showFormMessage("", "");
+
+}
+
+
+/* ================= RENDER TRIPS ================= */
+
+function renderTrips(searchText = "") {
+
+    const list =
+        document.getElementById("trip-list");
+
+    if (!list) {
+        return;
+    }
+
+
+    const search =
+        searchText.trim().toLowerCase();
+
+
+    const filtered =
+        trips
+            .filter(function(trip) {
+
+                const title =
+                    String(trip.title || "")
+                        .toLowerCase();
+
+                const destination =
+                    String(trip.destination || "")
+                        .toLowerCase();
+
+                return (
+                    !search ||
+                    title.includes(search) ||
+                    destination.includes(search)
+                );
+
+            })
+            .sort(function(a, b) {
+
+                return String(a.date || "")
+                    .localeCompare(
+                        String(b.date || "")
+                    );
+
+            });
+
+
+    list.innerHTML = "";
+
+
+    const empty =
+        document.getElementById("empty-message");
+
+    const noResults =
+        document.getElementById("no-results");
+
+
+    if (trips.length === 0) {
+
+        empty?.classList.remove("hidden");
+
+        noResults?.classList.add("hidden");
+
+    } else if (filtered.length === 0) {
+
+        empty?.classList.add("hidden");
+
+        noResults?.classList.remove("hidden");
+
+    } else {
+
+        empty?.classList.add("hidden");
+
+        noResults?.classList.add("hidden");
+
+    }
+
+
+    filtered.forEach(function(trip) {
+
+        const card =
+            document.createElement("article");
+
+        card.className =
+            "trip-card";
+
+
+        card.innerHTML = `
+
+            <div class="trip-card-image">
 
                 <img
-                    src="https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1000&q=80"
-                    alt="Beautiful mountain travel destination">
-
-            </div>
-
-
-            <div class="hero-card-content">
-
-                <span class="pill">
-                    FEATURED
-                </span>
-
-                <h2>
-                    Make memories,
-                    not just itineraries.
-                </h2>
-
-                <p>
-                    Keep your travel plans,
-                    destinations and notes
-                    together.
-                </p>
-
-            </div>
-
-        </article>
-
-    </div>
-
-</section>
-
-
-<!-- ================= DESTINATIONS ================= -->
-
-<section
-    id="destinations"
-    class="section section-soft">
-
-    <div class="container">
-
-
-        <div class="section-heading">
-
-            <div>
-
-                <p class="eyebrow">
-                    GET INSPIRED
-                </p>
-
-                <h2>
-                    Popular destinations
-                </h2>
-
-            </div>
-
-            <p>
-                Pick a destination to quickly
-                start planning your next trip.
-            </p>
-
-        </div>
-
-
-        <div class="destination-grid">
-
-
-            <!-- DESTINATION 1 -->
-
-            <article class="destination-card">
-
-                <div class="destination-image">
-
-                    <img
-                        src="https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=900&q=80"
-                        alt="Tropical beach destination">
-
-                </div>
-
-
-                <div class="card-content">
-
-                    <span class="card-tag">
-                        BEACH
-                    </span>
-
-                    <h3>
-                        Bali
-                    </h3>
-
-                    <p>
-                        Tropical beaches,
-                        temples and unforgettable
-                        sunsets.
-                    </p>
-
-                    <button
-                        type="button"
-                        class="text-btn destination-plan"
-                        data-destination="Bali">
-
-                        Plan Bali →
-                    </button>
-
-                </div>
-
-            </article>
-
-
-            <!-- DESTINATION 2 -->
-
-            <article class="destination-card">
-
-                <div class="destination-image">
-
-                    <img
-                        src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=900&q=80"
-                        alt="Tokyo city skyline">
-
-                </div>
-
-
-                <div class="card-content">
-
-                    <span class="card-tag">
-                        CITY
-                    </span>
-
-                    <h3>
-                        Tokyo
-                    </h3>
-
-                    <p>
-                        Discover modern city life,
-                        culture, food and tradition.
-                    </p>
-
-                    <button
-                        type="button"
-                        class="text-btn destination-plan"
-                        data-destination="Tokyo">
-
-                        Plan Tokyo →
-                    </button>
-
-                </div>
-
-            </article>
-
-
-            <!-- DESTINATION 3 -->
-
-            <article class="destination-card">
-
-                <div class="destination-image">
-
-                    <img
-                        src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=900&q=80"
-                        alt="Paris city view">
-
-                </div>
-
-
-                <div class="card-content">
-
-                    <span class="card-tag">
-                        CULTURE
-                    </span>
-
-                    <h3>
-                        Paris
-                    </h3>
-
-                    <p>
-                        Explore iconic landmarks,
-                        charming streets and cafés.
-                    </p>
-
-                    <button
-                        type="button"
-                        class="text-btn destination-plan"
-                        data-destination="Paris">
-
-                        Plan Paris →
-                    </button>
-
-                </div>
-
-            </article>
-
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- ================= ADD TRIP ================= -->
-
-<section
-    id="add-trip"
-    class="section">
-
-    <div class="container form-layout">
-
-
-        <div class="form-intro">
-
-            <p class="eyebrow">
-                YOUR JOURNEY
-            </p>
-
-            <h2>
-                Plan a new trip.
-            </h2>
-
-            <p>
-                Add your destination, date,
-                image and personal notes.
-                Your trip will be saved directly
-                in your browser.
-            </p>
-
-
-            <div class="tip-box">
-
-                <strong>
-                    Travel tip
-                </strong>
-
-                <span>
-                    Add useful notes such as
-                    places to visit, restaurants,
-                    packing reminders or things
-                    you want to remember.
+                    src="${escapeHTML(
+                        trip.image || DEFAULT_IMAGE
+                    )}"
+                    alt="${escapeHTML(
+                        trip.title || "Trip"
+                    )} cover image">
+
+                <span class="trip-date-badge">
+                    ${escapeHTML(
+                        formatDate(trip.date)
+                    )}
                 </span>
 
             </div>
 
-        </div>
 
+            <div class="trip-card-body">
 
-        <!-- FORM -->
+                <span class="card-tag">
 
-        <form
-            id="trip-form"
-            class="trip-form"
-            novalidate>
+                    ${
+                        isUpcoming(trip.date)
+                            ? "Upcoming"
+                            : "Past trip"
+                    }
 
-
-            <input
-                type="hidden"
-                id="edit-id"
-                value="">
-
-
-            <!-- TITLE + DESTINATION -->
-
-            <div class="form-row">
-
-
-                <div class="form-group">
-
-                    <label for="trip-title">
-                        Trip title
-                        <span>*</span>
-                    </label>
-
-                    <input
-                        type="text"
-                        id="trip-title"
-                        name="trip-title"
-                        placeholder="e.g. Summer adventure"
-                        maxlength="80"
-                        autocomplete="off">
-
-                    <span
-                        id="title-error"
-                        class="field-error">
-                    </span>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="trip-destination">
-                        Destination
-                        <span>*</span>
-                    </label>
-
-                    <input
-                        type="text"
-                        id="trip-destination"
-                        name="trip-destination"
-                        placeholder="e.g. Bali"
-                        maxlength="80"
-                        autocomplete="off">
-
-                    <span
-                        id="destination-error"
-                        class="field-error">
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <!-- DATE + IMAGE -->
-
-            <div class="form-row">
-
-
-                <div class="form-group">
-
-                    <label for="trip-date">
-                        Travel date
-                        <span>*</span>
-                    </label>
-
-                    <input
-                        type="date"
-                        id="trip-date"
-                        name="trip-date">
-
-                    <span
-                        id="date-error"
-                        class="field-error">
-                    </span>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="trip-image">
-                        Image URL
-                    </label>
-
-                    <input
-                        type="url"
-                        id="trip-image"
-                        name="trip-image"
-                        placeholder="https://example.com/image.jpg"
-                        autocomplete="url">
-
-                    <span
-                        id="image-error"
-                        class="field-error">
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <!-- NOTES -->
-
-            <div class="form-group">
-
-                <label for="trip-notes">
-                    Travel notes
-                </label>
-
-                <textarea
-                    id="trip-notes"
-                    name="trip-notes"
-                    maxlength="500"
-                    placeholder="Write something about your trip..."></textarea>
-
-                <div class="character-count">
-
-                    <span id="notes-count">
-                        0
-                    </span>
-                    / 500
-
-                </div>
-
-            </div>
-
-
-            <!-- MESSAGE -->
-
-            <div
-                id="form-message"
-                class="form-message"
-                role="alert"
-                aria-live="polite">
-            </div>
-
-
-            <!-- ACTIONS -->
-
-            <div class="form-actions">
-
-                <button
-                    type="submit"
-                    class="btn btn-primary">
-
-                    <span id="submit-text">
-                        Save trip
-                    </span>
-
-                </button>
-
-
-                <button
-                    type="button"
-                    id="cancel-btn"
-                    class="btn btn-ghost">
-
-                    Cancel
-
-                </button>
-
-            </div>
-
-
-        </form>
-
-    </div>
-
-</section>
-
-
-<!-- ================= MY TRIPS ================= -->
-
-<section
-    id="my-trips"
-    class="section section-soft">
-
-    <div class="container">
-
-
-        <div class="section-heading">
-
-            <div>
-
-                <p class="eyebrow">
-                    YOUR COLLECTION
-                </p>
-
-                <h2>
-                    My trips
-                </h2>
-
-            </div>
-
-            <p id="trip-summary">
-                0 trips saved
-            </p>
-
-        </div>
-
-
-        <!-- TOOLBAR -->
-
-        <div class="trip-toolbar">
-
-
-            <div class="search-box">
-
-                <span
-                    class="search-icon"
-                    aria-hidden="true">
-                    ⌕
                 </span>
 
-                <label
-                    for="trip-search"
-                    class="sr-only">
-                    Search trips
-                </label>
 
-                <input
-                    type="search"
-                    id="trip-search"
-                    placeholder="Search by title or destination..."
-                    autocomplete="off">
+                <h3>
+                    ${escapeHTML(
+                        trip.title
+                    )}
+                </h3>
+
+
+                <p class="destination">
+                    ${escapeHTML(
+                        trip.destination
+                    )}
+                </p>
+
+
+                <p class="trip-notes">
+
+                    ${
+                        escapeHTML(
+                            trip.notes ||
+                            "No notes added."
+                        )
+                    }
+
+                </p>
+
+
+                <div class="trip-actions">
+
+                    <button
+                        type="button"
+                        data-action="view"
+                        data-id="${escapeHTML(trip.id)}">
+
+                        View
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        data-action="edit"
+                        data-id="${escapeHTML(trip.id)}">
+
+                        Edit
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="danger"
+                        data-action="delete"
+                        data-id="${escapeHTML(trip.id)}">
+
+                        Delete
+
+                    </button>
+
+                </div>
 
             </div>
 
+        `;
 
-            <button
-                type="button"
-                id="clear-search"
-                class="btn btn-small btn-ghost">
 
-                Clear
+        const image =
+            card.querySelector("img");
 
-            </button>
 
-        </div>
+        if (image) {
 
+            image.addEventListener(
+                "error",
+                function() {
 
-        <!-- TRIP LIST -->
+                    image.src =
+                        DEFAULT_IMAGE;
 
-        <div
-            id="trip-list"
-            class="trip-grid">
-        </div>
+                },
+                { once: true }
+            );
 
+        }
 
-        <!-- EMPTY STATE -->
 
-        <div
-            id="empty-message"
-            class="empty-state">
+        list.appendChild(card);
 
-            <div
-                class="empty-icon"
-                aria-hidden="true">
-                🧳
-            </div>
+    });
 
-            <h3>
-                No trips yet
-            </h3>
 
-            <p>
-                Start planning your first
-                adventure.
-            </p>
+    updateTripCount();
 
-            <a
-                href="#add-trip"
-                class="btn btn-primary">
+    updateProfileStats();
 
-                Create your first trip
+}
 
-            </a>
 
-        </div>
+/* ================= COUNT ================= */
 
+function updateTripCount() {
 
-        <!-- NO SEARCH RESULTS -->
+    const count =
+        document.getElementById(
+            "hero-trip-count"
+        );
 
-        <div
-            id="no-results"
-            class="empty-state hidden">
 
-            <div
-                class="empty-icon"
-                aria-hidden="true">
-                🔎
-            </div>
+    const summary =
+        document.getElementById(
+            "trip-summary"
+        );
 
-            <h3>
-                No trips found
-            </h3>
 
-            <p>
-                Try a different title or
-                destination.
-            </p>
+    if (count) {
 
-        </div>
+        count.textContent =
+            trips.length;
 
-    </div>
+    }
 
-</section>
 
+    if (summary) {
 
-<!-- ================= ABOUT ================= -->
+        summary.textContent =
+            `${trips.length} ${
+                trips.length === 1
+                    ? "trip"
+                    : "trips"
+            } saved`;
 
-<section class="section section-dark">
+    }
 
-    <div class="container about-grid">
+}
 
 
-        <div>
+/* ================= TRIP ACTIONS ================= */
 
-            <p class="eyebrow">
-                WANDERLOG
-            </p>
+function setupTripActions() {
 
-            <h2>
-                Simple planning.
-                Meaningful memories.
-            </h2>
+    const list =
+        document.getElementById("trip-list");
 
-        </div>
+    if (!list) {
+        return;
+    }
 
 
-        <div>
+    list.addEventListener(
+        "click",
+        function(event) {
 
-            <p>
-                Wanderlog is a simple travel
-                planning application built with
-                HTML, CSS and JavaScript.
-            </p>
+            const button =
+                event.target.closest(
+                    "button[data-action]"
+                );
 
-            <p>
-                Your saved trips are stored
-                locally in your browser, so you
-                can create, edit, search and
-                revisit your travel plans.
-            </p>
 
-        </div>
+            if (!button) {
+                return;
+            }
 
-    </div>
 
-</section>
+            const id =
+                button.dataset.id;
 
 
-</main>
+            const trip =
+                trips.find(function(item) {
 
+                    return String(item.id) === String(id);
 
-<!-- ================= MODAL ================= -->
+                });
 
-<div
-    id="trip-modal"
-    class="modal hidden"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="modal-title">
 
+            if (!trip) {
+                return;
+            }
 
-    <div
-        class="modal-backdrop"
-        data-close-modal>
-    </div>
 
+            const action =
+                button.dataset.action;
 
-    <div class="modal-card">
 
+            if (action === "view") {
 
-        <button
-            type="button"
-            class="modal-close"
-            data-close-modal
-            aria-label="Close trip details">
+                openModal(trip);
 
-            ×
+            }
 
-        </button>
 
+            if (action === "edit") {
 
-        <img
-            id="modal-image"
-            src=""
-            alt="">
+                editTrip(trip);
 
+            }
 
-        <div class="modal-body">
 
+            if (action === "delete") {
 
-            <span
-                id="modal-date"
-                class="card-tag">
-            </span>
+                deleteTrip(trip);
 
+            }
 
-            <h2 id="modal-title">
-            </h2>
+        }
+    );
 
+}
 
-            <p
-                id="modal-destination"
-                class="modal-destination">
-            </p>
 
+/* ================= EDIT ================= */
 
-            <p id="modal-notes">
-            </p>
+function editTrip(trip) {
 
+    const editId =
+        document.getElementById("edit-id");
 
-        </div>
+    const title =
+        document.getElementById("trip-title");
 
-    </div>
+    const destination =
+        document.getElementById("trip-destination");
 
-</div>
+    const date =
+        document.getElementById("trip-date");
 
+    const image =
+        document.getElementById("trip-image");
 
-<!-- ================= TOAST ================= -->
+    const notes =
+        document.getElementById("trip-notes");
 
-<div
-    id="toast"
-    class="toast"
-    role="status"
-    aria-live="polite">
-</div>
+    const notesCount =
+        document.getElementById("notes-count");
 
+    const submitText =
+        document.getElementById("submit-text");
 
-<!-- ================= FOOTER ================= -->
 
-<footer class="site-footer">
+    if (editId) {
+        editId.value = trip.id;
+    }
 
-    <div class="container footer-inner">
 
-        <p>
+    if (title) {
+        title.value = trip.title || "";
+    }
 
-            ©
-            <span id="year"></span>
-            Wanderlog
 
-        </p>
+    if (destination) {
+        destination.value =
+            trip.destination || "";
+    }
 
 
-        <a href="profile.html">
+    if (date) {
+        date.value = trip.date || "";
+    }
 
-            Profile
 
-        </a>
+    if (image) {
 
-    </div>
+        image.value =
+            trip.image === DEFAULT_IMAGE
+                ? ""
+                : (trip.image || "");
 
-</footer>
+    }
 
 
-<script src="script.js"></script>
+    if (notes) {
+        notes.value = trip.notes || "";
+    }
 
-</body>
 
-</html>
+    if (notesCount) {
+
+        notesCount.textContent =
+            (trip.notes || "").length;
+
+    }
+
+
+    if (submitText) {
+
+        submitText.textContent =
+            "Update trip";
+
+    }
+
+
+    clearErrors();
+
+
+    showFormMessage(
+        "You are editing this trip.",
+        "success"
+    );
+
+
+    document
+        .getElementById("add-trip")
+        ?.scrollIntoView({
+            behavior: "smooth"
+        });
+
+
+    title?.focus();
+
+}
+
+
+/* ================= DELETE ================= */
+
+function deleteTrip(trip) {
+
+    const confirmed =
+        window.confirm(
+            `Delete "${trip.title}"?`
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    const oldTrips =
+        trips;
+
+
+    trips =
+        trips.filter(function(item) {
+
+            return String(item.id) !==
+                String(trip.id);
+
+        });
+
+
+    if (!saveTrips()) {
+
+        trips = oldTrips;
+
+        return;
+
+    }
+
+
+    renderTrips();
+
+    showToast(
+        "Trip deleted."
+    );
+
+}
+
+
+/* ================= SEARCH ================= */
+
+function setupSearch() {
+
+    const search =
+        document.getElementById(
+            "trip-search"
+        );
+
+
+    const clear =
+        document.getElementById(
+            "clear-search"
+        );
+
+
+    if (search) {
+
+        search.addEventListener(
+            "input",
+            function() {
+
+                renderTrips(
+                    search.value
+                );
+
+            }
+        );
+
+    }
+
+
+    if (clear) {
+
+        clear.addEventListener(
+            "click",
+            function() {
+
+                if (search) {
+
+                    search.value = "";
+
+                    search.focus();
+
+                }
+
+                renderTrips();
+
+            }
+        );
+
+    }
+
+}
+
+
+/* ================= DESTINATION BUTTONS ================= */
+
+function setupDestinationButtons() {
+
+    document
+        .querySelectorAll(
+            ".destination-plan"
+        )
+        .forEach(function(button) {
+
+            button.addEventListener(
+                "click",
+                function() {
+
+                    const destination =
+                        button.dataset.destination;
+
+
+                    const field =
+                        document.getElementById(
+                            "trip-destination"
+                        );
+
+
+                    if (field) {
+
+                        field.value =
+                            destination;
+
+                        field.focus();
+
+                    }
+
+
+                    document
+                        .getElementById(
+                            "add-trip"
+                        )
+                        ?.scrollIntoView({
+                            behavior: "smooth"
+                        });
+
+
+                    showToast(
+                        destination +
+                        " selected."
+                    );
+
+                }
+            );
+
+        });
+
+}
+
+
+/* ================= MODAL ================= */
+
+function setupModal() {
+
+    document
+        .querySelectorAll(
+            "[data-close-modal]"
+        )
+        .forEach(function(element) {
+
+            element.addEventListener(
+                "click",
+                closeModal
+            );
+
+        });
+
+
+    document.addEventListener(
+        "keydown",
+        function(event) {
+
+            if (event.key === "Escape") {
+
+                closeModal();
+
+            }
+
+        }
+    );
+
+}
+
+
+/* ================= OPEN MODAL ================= */
+
+function openModal(trip) {
+
+    const modal =
+        document.getElementById(
+            "trip-modal"
+        );
+
+
+    if (!modal) {
+        return;
+    }
+
+
+    const image =
+        document.getElementById(
+            "modal-image"
+        );
+
+
+    if (image) {
+
+        image.src =
+            trip.image ||
+            DEFAULT_IMAGE;
+
+        image.alt =
+            `${trip.title || "Trip"} cover image`;
+
+        image.onerror =
+            function() {
+
+                image.onerror = null;
+
+                image.src =
+                    DEFAULT_IMAGE;
+
+            };
+
+    }
+
+
+    const modalDate =
+        document.getElementById(
+            "modal-date"
+        );
+
+
+    const modalTitle =
+        document.getElementById(
+            "modal-title"
+        );
+
+
+    const modalDestination =
+        document.getElementById(
+            "modal-destination"
+        );
+
+
+    const modalNotes =
+        document.getElementById(
+            "modal-notes"
+        );
+
+
+    if (modalDate) {
+
+        modalDate.textContent =
+            formatDate(trip.date);
+
+    }
+
+
+    if (modalTitle) {
+
+        modalTitle.textContent =
+            trip.title || "";
+
+    }
+
+
+    if (modalDestination) {
+
+        modalDestination.textContent =
+            trip.destination || "";
+
+    }
+
+
+    if (modalNotes) {
+
+        modalNotes.textContent =
+            trip.notes ||
+            "No notes were added.";
+
+    }
+
+
+    modal.classList.remove("hidden");
+
+    document.body.style.overflow =
+        "hidden";
+
+
+    document
+        .querySelector(".modal-close")
+        ?.focus();
+
+}
+
+
+/* ================= CLOSE MODAL ================= */
+
+function closeModal() {
+
+    const modal =
+        document.getElementById(
+            "trip-modal"
+        );
+
+
+    if (!modal) {
+        return;
+    }
+
+
+    modal.classList.add("hidden");
+
+    document.body.style.overflow = "";
+
+}
+
+
+/* ================= IMAGE FALLBACK ================= */
+
+function setupImageFallback() {
+
+    document
+        .querySelectorAll("img")
+        .forEach(function(image) {
+
+            image.addEventListener(
+                "error",
+                function() {
+
+                    if (
+                        image.dataset.fallback === "true"
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    image.dataset.fallback =
+                        "true";
+
+
+                    image.src =
+                        DEFAULT_IMAGE;
+
+                }
+            );
+
+        });
+
+}
+
+
+/* ================= PROFILE ================= */
+
+function setupProfile() {
+
+    updateProfileStats();
+
+}
+
+
+function updateProfileStats() {
+
+    const total =
+        document.getElementById(
+            "profile-trip-count"
+        );
+
+
+    const destinationCount =
+        document.getElementById(
+            "profile-destination-count"
+        );
+
+
+    const upcoming =
+        document.getElementById(
+            "profile-upcoming-count"
+        );
+
+
+    const notes =
+        document.getElementById(
+            "profile-note-count"
+        );
+
+
+    if (
+        !total &&
+        !destinationCount &&
+        !upcoming &&
+        !notes
+    ) {
+
+        return;
+
+    }
+
+
+    const destinations =
+        new Set();
+
+
+    trips.forEach(function(trip) {
+
+        const destination =
+            String(
+                trip.destination || ""
+            )
+            .trim()
+            .toLowerCase();
+
+
+        if (destination) {
+
+            destinations.add(
+                destination
+            );
+
+        }
+
+    });
+
+
+    const upcomingCount =
+        trips.filter(function(trip) {
+
+            return isUpcoming(trip.date);
+
+        }).length;
+
+
+    const notesCount =
+        trips.filter(function(trip) {
+
+            return (
+                trip.notes &&
+                String(trip.notes).trim()
+            );
+
+        }).length;
+
+
+    if (total) {
+
+        total.textContent =
+            trips.length;
+
+    }
+
+
+    if (destinationCount) {
+
+        destinationCount.textContent =
+            destinations.size;
+
+    }
+
+
+    if (upcoming) {
+
+        upcoming.textContent =
+            upcomingCount;
+
+    }
+
+
+    if (notes) {
+
+        notes.textContent =
+            notesCount;
+
+    }
+
+}
