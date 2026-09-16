@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -10,980 +11,934 @@
 
     <meta
         name="description"
-        content="Wanderlog - a simple and responsive travel planning journal for organizing trips, destinations and travel memories.">
-
-    <meta
-        name="theme-color"
-        content="#264653">
+        content="Wanderlog travel planner - plan, save and manage your trips.">
 
     <title>Wanderlog | Travel Planner</title>
 
     <link
         rel="stylesheet"
         href="style.css">
+
 </head>
 
 <body>
 
-    <!-- ================= ACCESSIBILITY ================= -->
-
-    <a
-        href="#main-content"
-        class="skip-link">
-        Skip to main content
-    </a>
+<a href="#main-content" class="skip-link">
+    Skip to main content
+</a>
 
 
-    <!-- ================= HEADER ================= -->
+<!-- ================= HEADER ================= -->
 
-    <header class="site-header">
+<header class="site-header">
 
-        <nav
-            class="navbar container"
-            aria-label="Main navigation">
+    <nav class="navbar container">
 
-            <a
-                href="index.html"
-                class="brand"
-                aria-label="Wanderlog home">
+        <a
+            href="index.html"
+            class="brand"
+            aria-label="Wanderlog home">
 
-                <span
-                    class="brand-icon"
-                    aria-hidden="true">
-                    ✈
-                </span>
+            <span class="brand-icon">
+                ✈
+            </span>
 
-                <span>
-                    Wanderlog
-                </span>
+            <span>
+                Wanderlog
+            </span>
 
-            </a>
+        </a>
 
 
-            <button
-                type="button"
-                id="menu-toggle"
-                class="menu-toggle"
-                aria-label="Open navigation menu"
-                aria-expanded="false"
-                aria-controls="nav-links">
+        <button
+            id="menu-toggle"
+            class="menu-toggle"
+            type="button"
+            aria-label="Open navigation menu"
+            aria-expanded="false"
+            aria-controls="nav-links">
 
-                <span aria-hidden="true">☰</span>
+            <span></span>
+            <span></span>
+            <span></span>
 
-            </button>
+        </button>
 
 
-            <div
-                id="nav-links"
-                class="nav-links">
+        <ul
+            id="nav-links"
+            class="nav-links">
 
+            <li>
                 <a
-                    href="#home">
+                    href="#home"
+                    class="nav-link active">
                     Home
                 </a>
+            </li>
 
+            <li>
                 <a
-                    href="#destinations">
+                    href="#destinations"
+                    class="nav-link">
                     Destinations
                 </a>
+            </li>
 
+            <li>
                 <a
-                    href="#add-trip">
+                    href="#add-trip"
+                    class="nav-link">
                     Add Trip
                 </a>
+            </li>
 
+            <li>
                 <a
-                    href="#my-trips">
+                    href="#my-trips"
+                    class="nav-link">
                     My Trips
                 </a>
+            </li>
 
+            <li>
                 <a
-                    href="#about">
-                    About
-                </a>
-
-                <a
-                    href="profile.html">
+                    href="profile.html"
+                    class="profile-link">
                     Profile
                 </a>
+            </li>
+
+        </ul>
+
+    </nav>
+
+</header>
+
+
+<!-- ================= MAIN ================= -->
+
+<main id="main-content">
+
+
+<!-- ================= HERO ================= -->
+
+<section
+    id="home"
+    class="hero">
+
+    <div class="container hero-grid">
+
+
+        <div>
+
+            <p class="eyebrow">
+                PLAN • EXPLORE • REMEMBER
+            </p>
+
+            <h1>
+                Your next
+                adventure
+                starts here.
+            </h1>
+
+            <p class="hero-description">
+
+                Plan beautiful trips, save your
+                favourite destinations and keep
+                every travel memory organized
+                in one place.
+
+            </p>
+
+
+            <div class="hero-buttons">
+
+                <a
+                    href="#add-trip"
+                    class="btn btn-primary">
+
+                    ✈ Plan a trip
+
+                </a>
+
+                <a
+                    href="#destinations"
+                    class="btn btn-secondary">
+
+                    Explore destinations
+
+                </a>
 
             </div>
 
-        </nav>
 
-    </header>
+            <div class="hero-stats">
 
+                <div>
 
-    <!-- ================= MAIN ================= -->
+                    <strong id="hero-trip-count">
+                        0
+                    </strong>
 
-    <main id="main-content">
-
-
-        <!-- ================= HERO ================= -->
-
-        <section
-            id="home"
-            class="hero">
-
-            <div class="container hero-grid">
-
-                <div class="hero-content">
-
-                    <p class="eyebrow">
-                        PLAN • EXPLORE • REMEMBER
-                    </p>
-
-                    <h1>
-                        Your next adventure
-                        <span>starts here.</span>
-                    </h1>
-
-                    <p class="hero-description">
-                        Plan your journeys, save your favourite
-                        destinations and keep all your travel
-                        memories in one simple place.
-                    </p>
-
-
-                    <div class="hero-actions">
-
-                        <a
-                            href="#add-trip"
-                            class="btn btn-primary">
-                            Plan a trip
-                        </a>
-
-                        <a
-                            href="#destinations"
-                            class="btn btn-ghost">
-                            Explore destinations
-                        </a>
-
-                    </div>
-
-
-                    <!-- HERO STATISTICS -->
-
-                    <div
-                        class="hero-stats"
-                        aria-label="Trip statistics">
-
-                        <div class="hero-stat">
-
-                            <strong id="hero-trip-count">
-                                0
-                            </strong>
-
-                            <span>
-                                Trips saved
-                            </span>
-
-                        </div>
-
-
-                        <div class="hero-stat">
-
-                            <strong>
-                                3
-                            </strong>
-
-                            <span>
-                                Featured places
-                            </span>
-
-                        </div>
-
-
-                        <div class="hero-stat">
-
-                            <strong>
-                                100%
-                            </strong>
-
-                            <span>
-                                Local storage
-                            </span>
-
-                        </div>
-
-                    </div>
+                    <span>
+                        Saved trips
+                    </span>
 
                 </div>
 
 
-                <!-- HERO IMAGE -->
+                <div>
 
-                <div class="hero-card">
+                    <strong>
+                        Local
+                    </strong>
+
+                    <span>
+                        Browser storage
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        100%
+                    </strong>
+
+                    <span>
+                        Responsive
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- HERO CARD -->
+
+        <article class="hero-card">
+
+            <div class="hero-image">
+
+                <img
+                    src="https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1000&q=80"
+                    alt="Beautiful mountain travel destination">
+
+            </div>
+
+
+            <div class="hero-card-content">
+
+                <span class="pill">
+                    FEATURED
+                </span>
+
+                <h2>
+                    Make memories,
+                    not just itineraries.
+                </h2>
+
+                <p>
+                    Keep your travel plans,
+                    destinations and notes
+                    together.
+                </p>
+
+            </div>
+
+        </article>
+
+    </div>
+
+</section>
+
+
+<!-- ================= DESTINATIONS ================= -->
+
+<section
+    id="destinations"
+    class="section section-soft">
+
+    <div class="container">
+
+
+        <div class="section-heading">
+
+            <div>
+
+                <p class="eyebrow">
+                    GET INSPIRED
+                </p>
+
+                <h2>
+                    Popular destinations
+                </h2>
+
+            </div>
+
+            <p>
+                Pick a destination to quickly
+                start planning your next trip.
+            </p>
+
+        </div>
+
+
+        <div class="destination-grid">
+
+
+            <!-- DESTINATION 1 -->
+
+            <article class="destination-card">
+
+                <div class="destination-image">
 
                     <img
-                        src="https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1200&q=80"
-                        alt="Beautiful mountain landscape representing travel and adventure"
-                        loading="eager">
-
-                    <div class="hero-card-overlay">
-
-                        <span>
-                            Travel journal
-                        </span>
-
-                        <strong>
-                            Collect moments,
-                            not things.
-                        </strong>
-
-                    </div>
+                        src="https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=900&q=80"
+                        alt="Tropical beach destination">
 
                 </div>
 
-            </div>
 
-        </section>
+                <div class="card-content">
 
+                    <span class="card-tag">
+                        BEACH
+                    </span>
 
-        <!-- ================= DESTINATIONS ================= -->
-
-        <section
-            id="destinations"
-            class="section">
-
-            <div class="container">
-
-                <div class="section-heading">
-
-                    <div>
-
-                        <p class="eyebrow">
-                            GET INSPIRED
-                        </p>
-
-                        <h2>
-                            Popular destinations
-                        </h2>
-
-                    </div>
+                    <h3>
+                        Bali
+                    </h3>
 
                     <p>
-                        Choose a destination and start
-                        planning your next adventure.
+                        Tropical beaches,
+                        temples and unforgettable
+                        sunsets.
                     </p>
-
-                </div>
-
-
-                <div class="destination-grid">
-
-
-                    <!-- PARIS -->
-
-                    <article class="destination-card">
-
-                        <div class="destination-image">
-
-                            <img
-                                src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=900&q=80"
-                                alt="Eiffel Tower in Paris"
-                                loading="lazy">
-
-                        </div>
-
-                        <div class="card-content">
-
-                            <span class="card-tag">
-                                Europe
-                            </span>
-
-                            <h3>
-                                Paris
-                            </h3>
-
-                            <p>
-                                Discover iconic landmarks,
-                                charming streets and unforgettable
-                                French experiences.
-                            </p>
-
-                            <button
-                                type="button"
-                                class="destination-plan"
-                                data-destination="Paris">
-
-                                Plan Paris →
-                                
-                            </button>
-
-                        </div>
-
-                    </article>
-
-
-                    <!-- TOKYO -->
-
-                    <article class="destination-card">
-
-                        <div class="destination-image">
-
-                            <img
-                                src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=900&q=80"
-                                alt="Tokyo city skyline"
-                                loading="lazy">
-
-                        </div>
-
-                        <div class="card-content">
-
-                            <span class="card-tag">
-                                Asia
-                            </span>
-
-                            <h3>
-                                Tokyo
-                            </h3>
-
-                            <p>
-                                Experience vibrant city life,
-                                traditional culture and amazing
-                                Japanese food.
-                            </p>
-
-                            <button
-                                type="button"
-                                class="destination-plan"
-                                data-destination="Tokyo">
-
-                                Plan Tokyo →
-
-                            </button>
-
-                        </div>
-
-                    </article>
-
-
-                    <!-- DUBAI -->
-
-                    <article class="destination-card">
-
-                        <div class="destination-image">
-
-                            <img
-                                src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=900&q=80"
-                                alt="Dubai skyline with modern buildings"
-                                loading="lazy">
-
-                        </div>
-
-                        <div class="card-content">
-
-                            <span class="card-tag">
-                                Middle East
-                            </span>
-
-                            <h3>
-                                Dubai
-                            </h3>
-
-                            <p>
-                                Explore modern architecture,
-                                luxury experiences and desert
-                                adventures.
-                            </p>
-
-                            <button
-                                type="button"
-                                class="destination-plan"
-                                data-destination="Dubai">
-
-                                Plan Dubai →
-
-                            </button>
-
-                        </div>
-
-                    </article>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ================= ADD TRIP ================= -->
-
-        <section
-            id="add-trip"
-            class="section section-soft">
-
-            <div class="container">
-
-                <div class="section-heading">
-
-                    <div>
-
-                        <p class="eyebrow">
-                            BUILD YOUR JOURNEY
-                        </p>
-
-                        <h2>
-                            Add a new trip
-                        </h2>
-
-                    </div>
-
-                    <p>
-                        Save your travel plans locally
-                        and access them anytime.
-                    </p>
-
-                </div>
-
-
-                <div class="trip-form-layout">
-
-
-                    <!-- FORM INFORMATION -->
-
-                    <aside class="tip-box">
-
-                        <p class="eyebrow">
-                            TRAVEL TIP
-                        </p>
-
-                        <h3>
-                            Keep your memories organized.
-                        </h3>
-
-                        <p>
-                            Add a clear title, destination,
-                            travel date and notes. You can
-                            edit or delete the trip later.
-                        </p>
-
-                        <ul class="tip-list">
-
-                            <li>
-                                ✓ Add important travel details
-                            </li>
-
-                            <li>
-                                ✓ Search your saved trips
-                            </li>
-
-                            <li>
-                                ✓ View your trip in detail
-                            </li>
-
-                            <li>
-                                ✓ Data stays in your browser
-                            </li>
-
-                        </ul>
-
-                    </aside>
-
-
-                    <!-- TRIP FORM -->
-
-                    <div class="form-card">
-
-                        <form
-                            id="trip-form"
-                            novalidate>
-
-
-                            <!-- EDIT ID -->
-
-                            <input
-                                type="hidden"
-                                id="edit-id"
-                                value="">
-
-
-                            <!-- TITLE -->
-
-                            <div class="form-group">
-
-                                <label
-                                    for="trip-title">
-                                    Trip title
-                                </label>
-
-                                <input
-                                    type="text"
-                                    id="trip-title"
-                                    name="trip-title"
-                                    placeholder="Example: Summer Vacation"
-                                    maxlength="80"
-                                    autocomplete="off"
-                                    aria-describedby="title-error">
-
-                                <small
-                                    id="title-error"
-                                    class="field-error"
-                                    aria-live="polite">
-                                </small>
-
-                            </div>
-
-
-                            <!-- DESTINATION -->
-
-                            <div class="form-group">
-
-                                <label
-                                    for="trip-destination">
-                                    Destination
-                                </label>
-
-                                <input
-                                    type="text"
-                                    id="trip-destination"
-                                    name="trip-destination"
-                                    placeholder="Example: Paris, France"
-                                    maxlength="80"
-                                    autocomplete="off"
-                                    aria-describedby="destination-error">
-
-                                <small
-                                    id="destination-error"
-                                    class="field-error"
-                                    aria-live="polite">
-                                </small>
-
-                            </div>
-
-
-                            <!-- DATE -->
-
-                            <div class="form-group">
-
-                                <label
-                                    for="trip-date">
-                                    Travel date
-                                </label>
-
-                                <input
-                                    type="date"
-                                    id="trip-date"
-                                    name="trip-date"
-                                    aria-describedby="date-error">
-
-                                <small
-                                    id="date-error"
-                                    class="field-error"
-                                    aria-live="polite">
-                                </small>
-
-                            </div>
-
-
-                            <!-- IMAGE URL -->
-
-                            <div class="form-group">
-
-                                <label
-                                    for="trip-image">
-                                    Cover image URL
-                                    <span class="optional">
-                                        (optional)
-                                    </span>
-                                </label>
-
-                                <input
-                                    type="url"
-                                    id="trip-image"
-                                    name="trip-image"
-                                    placeholder="https://example.com/image.jpg"
-                                    autocomplete="url"
-                                    aria-describedby="image-error">
-
-                                <small
-                                    id="image-error"
-                                    class="field-error"
-                                    aria-live="polite">
-                                </small>
-
-                            </div>
-
-
-                            <!-- NOTES -->
-
-                            <div class="form-group">
-
-                                <div class="label-row">
-
-                                    <label
-                                        for="trip-notes">
-                                        Travel notes
-                                    </label>
-
-                                    <span
-                                        class="char-count">
-                                        <span id="notes-count">
-                                            0
-                                        </span>
-                                        / 500
-                                    </span>
-
-                                </div>
-
-                                <textarea
-                                    id="trip-notes"
-                                    name="trip-notes"
-                                    rows="5"
-                                    maxlength="500"
-                                    placeholder="Write a few memories, plans or places you want to visit..."></textarea>
-
-                            </div>
-
-
-                            <!-- FORM MESSAGE -->
-
-                            <div
-                                id="form-message"
-                                class="form-message"
-                                role="status"
-                                aria-live="polite">
-                            </div>
-
-
-                            <!-- FORM ACTIONS -->
-
-                            <div class="form-actions">
-
-                                <button
-                                    type="submit"
-                                    class="btn btn-primary">
-
-                                    <span id="submit-text">
-                                        Save trip
-                                    </span>
-
-                                </button>
-
-                                <button
-                                    type="button"
-                                    id="cancel-btn"
-                                    class="btn btn-secondary">
-
-                                    Clear
-
-                                </button>
-
-                            </div>
-
-                        </form>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ================= MY TRIPS ================= -->
-
-        <section
-            id="my-trips"
-            class="section">
-
-            <div class="container">
-
-
-                <div class="section-heading">
-
-                    <div>
-
-                        <p class="eyebrow">
-                            YOUR JOURNAL
-                        </p>
-
-                        <h2>
-                            My trips
-                        </h2>
-
-                    </div>
-
-                    <p
-                        id="trip-summary"
-                        aria-live="polite">
-                        0 trips saved
-                    </p>
-
-                </div>
-
-
-                <!-- SEARCH TOOLBAR -->
-
-                <div class="trip-toolbar">
-
-                    <div class="search-box">
-
-                        <label
-                            for="trip-search"
-                            class="sr-only">
-                            Search saved trips
-                        </label>
-
-                        <input
-                            type="search"
-                            id="trip-search"
-                            placeholder="Search trips or destinations..."
-                            autocomplete="off">
-
-                    </div>
-
 
                     <button
                         type="button"
-                        id="clear-search"
-                        class="btn btn-secondary">
+                        class="text-btn destination-plan"
+                        data-destination="Bali">
 
-                        Clear search
-
+                        Plan Bali →
                     </button>
 
                 </div>
 
+            </article>
 
-                <!-- EMPTY STATE -->
 
-                <div
-                    id="empty-message"
-                    class="empty-state">
+            <!-- DESTINATION 2 -->
 
-                    <div
-                        class="empty-icon"
-                        aria-hidden="true">
-                        ✈
-                    </div>
+            <article class="destination-card">
+
+                <div class="destination-image">
+
+                    <img
+                        src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=900&q=80"
+                        alt="Tokyo city skyline">
+
+                </div>
+
+
+                <div class="card-content">
+
+                    <span class="card-tag">
+                        CITY
+                    </span>
 
                     <h3>
-                        No trips added yet
+                        Tokyo
                     </h3>
 
                     <p>
-                        Your travel journal is waiting.
-                        Add your first trip to get started.
+                        Discover modern city life,
+                        culture, food and tradition.
                     </p>
 
-                    <a
-                        href="#add-trip"
-                        class="btn btn-primary">
+                    <button
+                        type="button"
+                        class="text-btn destination-plan"
+                        data-destination="Tokyo">
 
-                        Add your first trip
+                        Plan Tokyo →
+                    </button>
 
-                    </a>
+                </div>
+
+            </article>
+
+
+            <!-- DESTINATION 3 -->
+
+            <article class="destination-card">
+
+                <div class="destination-image">
+
+                    <img
+                        src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=900&q=80"
+                        alt="Paris city view">
 
                 </div>
 
 
-                <!-- NO SEARCH RESULTS -->
+                <div class="card-content">
 
-                <div
-                    id="no-results"
-                    class="empty-state hidden">
-
-                    <div
-                        class="empty-icon"
-                        aria-hidden="true">
-                        🔎
-                    </div>
+                    <span class="card-tag">
+                        CULTURE
+                    </span>
 
                     <h3>
-                        No matching trips
+                        Paris
                     </h3>
 
                     <p>
-                        Try another destination or trip title.
+                        Explore iconic landmarks,
+                        charming streets and cafés.
                     </p>
 
-                </div>
+                    <button
+                        type="button"
+                        class="text-btn destination-plan"
+                        data-destination="Paris">
 
-
-                <!-- TRIP LIST -->
-
-                <div
-                    id="trip-list"
-                    class="trip-grid"
-                    aria-live="polite">
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ================= ABOUT ================= -->
-
-        <section
-            id="about"
-            class="about-section">
-
-            <div class="container">
-
-                <div class="about-grid">
-
-                    <div>
-
-                        <p class="eyebrow">
-                            ABOUT WANDERLOG
-                        </p>
-
-                        <h2>
-                            Your personal travel journal.
-                        </h2>
-
-                    </div>
-
-
-                    <div>
-
-                        <p>
-                            Wanderlog helps you organize your
-                            travel plans in one simple place.
-                            Create trips, save destinations,
-                            search your plans and revisit your
-                            memories whenever you want.
-                        </p>
-
-                        <p>
-                            Your trip information is stored
-                            locally in your browser, making
-                            Wanderlog simple, lightweight and
-                            easy to use.
-                        </p>
-
-                        <a
-                            href="profile.html"
-                            class="btn btn-light">
-
-                            View travel profile
-
-                        </a>
-
-                    </div>
+                        Plan Paris →
+                    </button>
 
                 </div>
 
-            </div>
+            </article>
 
-        </section>
-
-    </main>
-
-
-    <!-- ================= FOOTER ================= -->
-
-    <footer class="site-footer">
-
-        <div class="container footer-inner">
-
-            <p>
-                ©
-                <span id="year"></span>
-                Wanderlog
-            </p>
-
-            <div class="footer-links">
-
-                <a href="#home">
-                    Back to top ↑
-                </a>
-
-                <a href="profile.html">
-                    Profile
-                </a>
-
-            </div>
 
         </div>
 
-    </footer>
-
-
-    <!-- ================= TOAST ================= -->
-
-    <div
-        id="toast"
-        class="toast"
-        role="status"
-        aria-live="polite"
-        aria-atomic="true">
     </div>
 
+</section>
 
-    <!-- ================= TRIP MODAL ================= -->
 
-    <div
-        id="trip-modal"
-        class="modal hidden"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modal-title">
+<!-- ================= ADD TRIP ================= -->
 
-        <div
-            class="modal-backdrop"
-            data-close-modal>
+<section
+    id="add-trip"
+    class="section">
+
+    <div class="container form-layout">
+
+
+        <div class="form-intro">
+
+            <p class="eyebrow">
+                YOUR JOURNEY
+            </p>
+
+            <h2>
+                Plan a new trip.
+            </h2>
+
+            <p>
+                Add your destination, date,
+                image and personal notes.
+                Your trip will be saved directly
+                in your browser.
+            </p>
+
+
+            <div class="tip-box">
+
+                <strong>
+                    Travel tip
+                </strong>
+
+                <span>
+                    Add useful notes such as
+                    places to visit, restaurants,
+                    packing reminders or things
+                    you want to remember.
+                </span>
+
+            </div>
+
         </div>
 
 
-        <div class="modal-card">
+        <!-- FORM -->
+
+        <form
+            id="trip-form"
+            class="trip-form"
+            novalidate>
+
+
+            <input
+                type="hidden"
+                id="edit-id"
+                value="">
+
+
+            <!-- TITLE + DESTINATION -->
+
+            <div class="form-row">
+
+
+                <div class="form-group">
+
+                    <label for="trip-title">
+                        Trip title
+                        <span>*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        id="trip-title"
+                        name="trip-title"
+                        placeholder="e.g. Summer adventure"
+                        maxlength="80"
+                        autocomplete="off">
+
+                    <span
+                        id="title-error"
+                        class="field-error">
+                    </span>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="trip-destination">
+                        Destination
+                        <span>*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        id="trip-destination"
+                        name="trip-destination"
+                        placeholder="e.g. Bali"
+                        maxlength="80"
+                        autocomplete="off">
+
+                    <span
+                        id="destination-error"
+                        class="field-error">
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- DATE + IMAGE -->
+
+            <div class="form-row">
+
+
+                <div class="form-group">
+
+                    <label for="trip-date">
+                        Travel date
+                        <span>*</span>
+                    </label>
+
+                    <input
+                        type="date"
+                        id="trip-date"
+                        name="trip-date">
+
+                    <span
+                        id="date-error"
+                        class="field-error">
+                    </span>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="trip-image">
+                        Image URL
+                    </label>
+
+                    <input
+                        type="url"
+                        id="trip-image"
+                        name="trip-image"
+                        placeholder="https://example.com/image.jpg"
+                        autocomplete="url">
+
+                    <span
+                        id="image-error"
+                        class="field-error">
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- NOTES -->
+
+            <div class="form-group">
+
+                <label for="trip-notes">
+                    Travel notes
+                </label>
+
+                <textarea
+                    id="trip-notes"
+                    name="trip-notes"
+                    maxlength="500"
+                    placeholder="Write something about your trip..."></textarea>
+
+                <div class="character-count">
+
+                    <span id="notes-count">
+                        0
+                    </span>
+                    / 500
+
+                </div>
+
+            </div>
+
+
+            <!-- MESSAGE -->
+
+            <div
+                id="form-message"
+                class="form-message"
+                role="alert"
+                aria-live="polite">
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="form-actions">
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+
+                    <span id="submit-text">
+                        Save trip
+                    </span>
+
+                </button>
+
+
+                <button
+                    type="button"
+                    id="cancel-btn"
+                    class="btn btn-ghost">
+
+                    Cancel
+
+                </button>
+
+            </div>
+
+
+        </form>
+
+    </div>
+
+</section>
+
+
+<!-- ================= MY TRIPS ================= -->
+
+<section
+    id="my-trips"
+    class="section section-soft">
+
+    <div class="container">
+
+
+        <div class="section-heading">
+
+            <div>
+
+                <p class="eyebrow">
+                    YOUR COLLECTION
+                </p>
+
+                <h2>
+                    My trips
+                </h2>
+
+            </div>
+
+            <p id="trip-summary">
+                0 trips saved
+            </p>
+
+        </div>
+
+
+        <!-- TOOLBAR -->
+
+        <div class="trip-toolbar">
+
+
+            <div class="search-box">
+
+                <span
+                    class="search-icon"
+                    aria-hidden="true">
+                    ⌕
+                </span>
+
+                <label
+                    for="trip-search"
+                    class="sr-only">
+                    Search trips
+                </label>
+
+                <input
+                    type="search"
+                    id="trip-search"
+                    placeholder="Search by title or destination..."
+                    autocomplete="off">
+
+            </div>
+
 
             <button
                 type="button"
-                class="modal-close"
-                data-close-modal
-                aria-label="Close trip details">
+                id="clear-search"
+                class="btn btn-small btn-ghost">
 
-                ×
+                Clear
 
             </button>
 
+        </div>
 
-            <div class="modal-image-wrapper">
 
-                <img
-                    id="modal-image"
-                    src=""
-                    alt="Trip cover image">
+        <!-- TRIP LIST -->
 
+        <div
+            id="trip-list"
+            class="trip-grid">
+        </div>
+
+
+        <!-- EMPTY STATE -->
+
+        <div
+            id="empty-message"
+            class="empty-state">
+
+            <div
+                class="empty-icon"
+                aria-hidden="true">
+                🧳
             </div>
 
+            <h3>
+                No trips yet
+            </h3>
 
-            <div class="modal-content">
+            <p>
+                Start planning your first
+                adventure.
+            </p>
 
-                <p
-                    id="modal-date"
-                    class="eyebrow">
-                </p>
+            <a
+                href="#add-trip"
+                class="btn btn-primary">
 
-                <h2
-                    id="modal-title">
-                </h2>
+                Create your first trip
 
-                <p
-                    id="modal-destination"
-                    class="modal-destination">
-                </p>
+            </a>
 
-                <p
-                    id="modal-notes"
-                    class="modal-notes">
-                </p>
+        </div>
 
+
+        <!-- NO SEARCH RESULTS -->
+
+        <div
+            id="no-results"
+            class="empty-state hidden">
+
+            <div
+                class="empty-icon"
+                aria-hidden="true">
+                🔎
             </div>
+
+            <h3>
+                No trips found
+            </h3>
+
+            <p>
+                Try a different title or
+                destination.
+            </p>
 
         </div>
 
     </div>
 
+</section>
 
-    <!-- ================= JAVASCRIPT ================= -->
 
-    <script src="script.js"></script>
+<!-- ================= ABOUT ================= -->
+
+<section class="section section-dark">
+
+    <div class="container about-grid">
+
+
+        <div>
+
+            <p class="eyebrow">
+                WANDERLOG
+            </p>
+
+            <h2>
+                Simple planning.
+                Meaningful memories.
+            </h2>
+
+        </div>
+
+
+        <div>
+
+            <p>
+                Wanderlog is a simple travel
+                planning application built with
+                HTML, CSS and JavaScript.
+            </p>
+
+            <p>
+                Your saved trips are stored
+                locally in your browser, so you
+                can create, edit, search and
+                revisit your travel plans.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+</main>
+
+
+<!-- ================= MODAL ================= -->
+
+<div
+    id="trip-modal"
+    class="modal hidden"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-title">
+
+
+    <div
+        class="modal-backdrop"
+        data-close-modal>
+    </div>
+
+
+    <div class="modal-card">
+
+
+        <button
+            type="button"
+            class="modal-close"
+            data-close-modal
+            aria-label="Close trip details">
+
+            ×
+
+        </button>
+
+
+        <img
+            id="modal-image"
+            src=""
+            alt="">
+
+
+        <div class="modal-body">
+
+
+            <span
+                id="modal-date"
+                class="card-tag">
+            </span>
+
+
+            <h2 id="modal-title">
+            </h2>
+
+
+            <p
+                id="modal-destination"
+                class="modal-destination">
+            </p>
+
+
+            <p id="modal-notes">
+            </p>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= TOAST ================= -->
+
+<div
+    id="toast"
+    class="toast"
+    role="status"
+    aria-live="polite">
+</div>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="site-footer">
+
+    <div class="container footer-inner">
+
+        <p>
+
+            ©
+            <span id="year"></span>
+            Wanderlog
+
+        </p>
+
+
+        <a href="profile.html">
+
+            Profile
+
+        </a>
+
+    </div>
+
+</footer>
+
+
+<script src="script.js"></script>
 
 </body>
 
